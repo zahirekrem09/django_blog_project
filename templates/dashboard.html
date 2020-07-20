@@ -1,0 +1,44 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% block sub_title %} Dashboard {% endblock %}
+{% block sub_content %}
+
+<a href="{% url 'addarticle' %}"  class="btn btn-outline-warning"><i class="fa fa-plus" aria-hidden="true"></i>Add Post</a>
+<hr>
+{% if posts %}
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">Başlık</th>
+        <th scope="col">Yazar</th>
+        <th scope="col">Tarih</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for post in posts  %}
+      <tr>
+        <th scope="row">{{post.id}}</th>
+
+        <td><a href="{% url 'post' post.id %}">{{post.title}}</a>  </td>
+        <td>{{post.author}}</td>
+        <td>{{post.created_at}}</td>
+        <td><a href="{% url 'update' post.id %}" class="btn btn-outline-info">Update</a></td>
+        <td><a href="{% url 'delete' post.id %}" class="btn btn-outline-danger">Delete</a></td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+
+{% else %}
+    <div  class="alert alert-danger">
+         Henüz Makaleniz bulunmamaktadır.
+    </div>
+{% endif %}
+
+
+
+{% endblock sub_content %}

@@ -1,0 +1,41 @@
+<a class="navbar-brand" href="#"><span class="font-weight-bold">Clean Blog</span></a>
+<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+<div class="collapse navbar-collapse" id="menu-content">
+     <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item active">
+          <a class="nav-link" href="{% url 'article:articles' %}">Articles</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+          </li>
+      </ul>
+    {% if request.user.is_authenticated %}
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown user-account">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="user-image" style="background-image:url({{ request.user.profile_image }})" ></span> Selam, {{ request.user.first_name }}
+                </a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'account_change_password' %}" class="dropdown-item">Şifre Değişikliği</a>
+                    <a href="{% url 'account_logout' %}" class="dropdown-item">Çıkış Yap</a>
+                    <a href="{% url 'post:dashboard' %}" class="dropdown-item">Kontrol Paneli</a>
+                </div>
+            </li>
+            <li class="nav-item"><a class="nav-link nav-btn" href="#"><span><i class="fa fa-plus" aria-hidden="true"></i>Add Post</span></a></li>
+        </ul>
+    {% else %}
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link " href="{% url 'account_login' %}"><span>Giriş Yap</span></a></li>
+            <li class="nav-item"><a class="nav-link " href="{% url 'account_signup' %}"><span>Üye Ol</span></a></li>
+        </ul>
+    {% endif %}
+</div>

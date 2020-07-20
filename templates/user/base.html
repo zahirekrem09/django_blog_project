@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="clearfix" style="margin-top: 150px">
+    <div id="content">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col col-lg-12 col-xl-10">
+                    <div class="row has-sidebar">
+                        <div class="col-md-3 col-lg-4 col-xl-4 col-sidebar">
+                            <div id="sidebar" class="sidebar-left">
+                                <div class="sidebar_inner">
+                                    <div class="list-group no-border list-unstyled">
+                                        <span class="list-group-item heading">Manage Account</span>
+                                        <a href="{% url 'retrieve' request.user.username %}" class="list-group-item {% if request.resolver_match.url_name == "retrieve" %} active {% endif %}  "><i class="icon fas fa-user"></i>Per. Information</a>
+                                        <a href="{% url 'updateprofile' request.user.username %}" class="list-group-item {% if request.resolver_match.url_name == "updateprofile" %} active {% endif %}  "><i class="fas fa-user-edit"></i>Update Profile</a>
+                                        <a href="{% url 'dashboard' %}" class="list-group-item {% if request.resolver_match.url_name == "dashboard" %} active {% endif %} "><i class="fas fa-pager"></i>Dashboard</a>
+                                        <a href="{% url 'account_change_password' %}" class="list-group-item {% if request.resolver_match.url_name == "account_change_password" %} active {% endif %} "><i class="icon fas  fa-lock"></i>Change Password</a>
+
+                                        <a href="{% url 'account_logout' %}" class="list-group-item {% if request.resolver_match.url_name == "account_logout" %} active {% endif %} "><i class="fas fa-sign-out-alt"></i>Logout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9 col-lg-8 col-xl-8">
+
+                            <div class="theiaStickySidebar" style="padding-top: 1px; padding-bottom: 1px; position: static; transform: none;">
+                                <div class="page-header bordered">
+                                    <h1>{% block sub_title %} {% endblock %}</h1>
+                                </div>
+                            </div>
+                            {% block sub_content %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

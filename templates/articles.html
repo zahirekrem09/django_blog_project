@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Main Content -->
+  <div class="container" style="margin-top: 150px">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <h3>Makaleler</h3>
+            <hr>
+  </div>
+  <form>
+    {% csrf_token %}
+    <input type="text" name = "keyword" class="input-md" maxlength="64" placeholder="Search...">
+    <button type="submit" class="btn btn-outline-warning btn-sm"><i class="fas fa-search"></i>Search</button>
+  </form>
+</div>
+
+        {% if object_list  %}
+        {% for post in object_list %}
+
+            <div class="post-preview">
+              <a href="{% url 'post' post.pk %}">
+                <h2 class="post-title">
+                  {{ post.title }}
+                </h2>
+                <h3 class="post-subtitle">
+                  {{ post.subtitle }}
+                </h3>
+              </a>
+              <p class="post-meta">Posted by
+                <a href="#">{{ post.author }}</a>
+                on {{ post.created_at|date:'F d, Y' }}</p>
+      <a  href="{% url 'post' post.pk %}"  class="btn btn-outline-info float-right">Read More</a>
+            </div>
+            <hr>
+
+  {%endfor%}
+  {% else %}
+<div class="row">
+  <div class="col-md-10 offset-md-3">
+    <div class="col-lg-8">
+      <div  class="alert alert-warning">
+        Makale bulunamadı
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+
+
+
+
+        <!-- Pager  sayfalama  -->
+        <div class="clearfix">
+          {% if is_paginated %}
+
+              {% if page_obj.number == 1 %}
+                 <a class="btn btn-outline-info float-left" href="?page=2">Older Posts &rarr;</a>
+              {% endif %}
+
+              {% if page_obj.has_previous %}
+                <a class="btn btn-outline-info " href="/articles/">&laquo;</a>
+                <a class="btn btn-outline-info " href="?page={{page_obj.previous_page_number}}"> &lsaquo;</a>
+              {% endif %}
+
+              {% for num in page_obj.paginator.page_range %}
+
+                {% if page_obj.number == num and page_obj.number != 1  %}
+                 <a class="btn btn-outline-info " href="?page={{num}}"> {{num}} </a>
+                {% endif %}
+              {%endfor%}
+
+
+
+              {% if page_obj.has_next and page_obj.number != 1 %}
+                <a class="btn btn-outline-info " href="?page={{page_obj.next_page_number}}"> &rsaquo;</a>
+                <a class="btn btn-outline-info " href="?page={{page_obj.paginator.num_pages}}"> &raquo;</a>
+              {% endif %}
+
+          {% endif %}
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <hr>
+
+{% endblock content %}

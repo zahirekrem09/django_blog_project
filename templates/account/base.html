@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+{% load static %}
+{% load socialaccount %}
+{% providers_media_js %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Blog</title>
+
+    <!-- Bootstrap -->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:100,200,300,400,500,700" rel="stylesheet">
+
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+	<link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+
+</head>
+<body>
+<div id="main">
+
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="menu">
+        <div class="container">
+            <a class="navbar-brand" href="/"><span class="font-weight-bold">Clean Blog</span></a>
+<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars"></i>
+      </button>
+<div class="collapse navbar-collapse" id="menu-content">
+     <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item active">
+          <a class="nav-link" href="/">Articles</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+          </li>
+      </ul>
+    {% if request.user.is_authenticated %}
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown user-account">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="user-image" style="background-image:url({{ request.user.profile_image }})" ></span> Selam, {{ request.user.first_name }}
+                </a>
+                <div class="dropdown-menu">
+                    <a href="{% url 'retrieve' request.user.username %}" class="dropdown-item">Per. Information</a>
+                    <a href="{% url 'updateprofile' request.user.username %}" class="dropdown-item">Update Profile</a>
+                    <a href="{% url 'dashboard' %}" class="dropdown-item">Dashboard</a>
+                    <a href="{% url 'account_change_password' %}" class="dropdown-item">Change Password</a>
+                    <a href="{% url 'account_logout' %}" class="dropdown-item">Logout</a>
+
+                </div>
+            </li>
+            <li class="nav-item"><a class="nav-link nav-btn" href="#"><span><i class="fa fa-plus" aria-hidden="true"></i>Add Post</span></a></li>
+        </ul>
+    {% else %}
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link " href="{% url 'account_login' %}"><span>Login</span></a></li>
+            <li class="nav-item"><a class="nav-link " href="{% url 'account_signup' %}"><span>Register</span></a></li>
+        </ul>
+    {% endif %}
+</div>
+        </div>
+    </nav>
+
+
+    <div id="content" style="margin-top: 100px">
+        <div class="container">
+            <div class="row justify-content-md-center align-items-center">
+                <div class="col col-md-6  col-lg-5 col-xl-4">
+                    <ul class="nav nav-tabs tab-lg" role="tablist">
+                        <li role="presentation" class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == "account_login" %} active {% endif %} " href="{% url 'account_login' %}">Login</a></li>
+                        <li role="presentation" class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == "account_signup" %} active {% endif %}" href="{% url 'account_signup' %}">Register</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="login">
+                            {% block content %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-5 col-xl-4">
+                    <div class="socal-login-buttons">
+                        <a href="#" class="btn btn-social btn-block btn-facebook"><i class="icon fab fa-facebook"></i> Continue with Facebook</a>
+                        <a href="#" class="btn btn-social btn-block btn-twitter"><i class="icon fab fa-twitter"></i> Continue with Twitter</a>
+                        <a href="{% provider_login_url 'github' %}" class="btn btn-social btn-block btn-github"><i class="icon fab fa-github"></i> Continue with Github</a>
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-social btn-block btn-google"><i class="icon fab fa-google"></i> Continue with Google</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
