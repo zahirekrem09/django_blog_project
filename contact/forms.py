@@ -3,20 +3,21 @@ from .models import Contact
 
 
 class ContactForm(forms.ModelForm):
+
     class Meta:
         model = Contact
         fields = ('name', 'email', 'phone', 'message')
         widgets = {
-        'name': forms.TextInput(attrs={
-            'placeholder' : 'Name'
+            'name': forms.TextInput(attrs={
+                'placeholder': 'Name'
             }),
-         'email': forms.TextInput(attrs={
-            'placeholder' : 'Email'
+            'email': forms.TextInput(attrs={
+                'placeholder': 'Email'
             }),
-          'phone': forms.TextInput(attrs={
-            'placeholder' : 'Phone'
+            'phone': forms.TextInput(attrs={
+                'placeholder': 'Phone'
             }),
-           'message': forms.TextInput(attrs={
-            'placeholder' : 'Message'
+            'message': forms.TextInput(attrs={
+                'placeholder': 'Message'
             })
         }

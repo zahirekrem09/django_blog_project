@@ -3,16 +3,18 @@
 {% block sub_title %} Dashboard {% endblock %}
 {% block sub_content %}
 
-<a href="{% url 'addarticle' %}"  class="btn btn-outline-warning"><i class="fa fa-plus" aria-hidden="true"></i>Add Post</a>
+<a href="{% url 'addarticle' %}"  class="btn btn-outline-warning"><i class="fas fa-plus" aria-hidden="true"></i>Add Post</a>
+<a href="{% url 'dashboard' 'favorites'%}"  class="btn btn-outline-info {% if filter_by == 'favorites' %}active{% endif %} "><i class="fas fa-star" aria-hidden="true"></i>Favorites</a>
+<a href="{% url 'dashboard' 'all'%}"  class="btn btn-outline-info {% if filter_by == 'all' %}active{% endif %} "><i class="fas fa-arrows-alt" aria-hidden="true"></i>View All</a>
+
 <hr>
 {% if posts %}
 <table class="table table-striped">
     <thead>
       <tr>
-        <th scope="col">id</th>
-        <th scope="col">Başlık</th>
-        <th scope="col">Yazar</th>
-        <th scope="col">Tarih</th>
+        <th scope="col">Title</th>
+        <th scope="col">Date</th>
+        <th>Favorite</th>
         <th scope="col"></th>
         <th scope="col"></th>
       </tr>
@@ -20,11 +22,12 @@
     <tbody>
     {% for post in posts  %}
       <tr>
-        <th scope="row">{{post.id}}</th>
-
         <td><a href="{% url 'post' post.id %}">{{post.title}}</a>  </td>
-        <td>{{post.author}}</td>
-        <td>{{post.created_at}}</td>
+        <td>{{post.created_at|date:'F d, Y'}}</td>
+        <td>
+          <a href="{% url 'favorite_post' post.id %}" class="btn btn-outline-success {% if post.is_favorite %}active{% endif %}">
+            <i class="fas fa-star {% if post.is_favorite %}active{% endif %}"></i></a>
+        </td>
         <td><a href="{% url 'update' post.id %}" class="btn btn-outline-info">Update</a></td>
         <td><a href="{% url 'delete' post.id %}" class="btn btn-outline-danger">Delete</a></td>
     </tr>
@@ -35,7 +38,7 @@
 
 {% else %}
     <div  class="alert alert-danger">
-         Henüz Makaleniz bulunmamaktadır.
+         You have no articles yet.
     </div>
 {% endif %}
 

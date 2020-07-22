@@ -14,9 +14,9 @@ class CustomUserForm(forms.ModelForm):
   class Meta:
     model = User
     #fields = "__all__"
-    fields = ('username', 'first_name',
+    fields = ('profile_image', 'username', 'first_name',
               'last_name', 'email',
               'phone_number', 'interests',
               'gender', 'marital_status',
-              'educational_status', 'profession'
+              'educational_status', 'profession', 'profile_image'
               )

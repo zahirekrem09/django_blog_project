@@ -27,9 +27,12 @@ class User(AbstractUser):
       null=True, choices=ProfessionChoices.CHOICES)
   interests = models.ManyToManyField(to=Interest)
 
+  profile_image = models.FileField(
+      upload_to='images/', blank=True, null=True, verbose_name="Profil İmage", default="/static/img/indir.jpg")
+
   class Meta:
     verbose_name = "User"
 
-  @property
-  def profile_image(self):
-    return "/static/img/indir.jpg"
+  # @property
+  # def profile_image(self):
+  #   return "/static/img/indir.jpg"

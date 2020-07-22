@@ -45,5 +45,5 @@ def updateUser(request, username):
         user = form.save()
         user.save()
         messages.success(request, "Profil Başarı ile Güncellendi")
-        return redirect("dashboard")
+        return redirect("retrieve", username=username)
     return render(request, "user/updateprofile.html", {"form": form})

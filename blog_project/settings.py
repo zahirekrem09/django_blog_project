@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_cleanup',
 
 
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -178,3 +179,7 @@ AUTH_USER_MODEL = "blog.User"
 ACCOUNT_FORMS = {'signup': 'blog.forms.CustomSignupForm'}
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
+
+
+#RECAPTCHA_PUBLIC_KEY = '6LfyirMZAAAAAFBYWbBRqg_SdINlRXyC3HhjBykR'
+#RECAPTCHA_PRIVATE_KEY = '6LfyirMZAAAAAOt-h6miVQsTop9XzRCQluhqFgUc'

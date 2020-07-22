@@ -22,9 +22,64 @@
 
   <!-- Custom styles for this template -->
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
-  <link href="{% static 'css/clean-blog.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/clean-blog.css' %}" rel="stylesheet">
 
   <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            var $window = $(this);
+            var $blog_comment_list = $window.find("#blog-comment-list");
+            $window.on('submit', '.comment-form', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $method = $this.attr('method');
+                var $data = $this.serialize();
+                var $url = $this.attr('action');
+
+                $.ajax({
+                    url: $url,
+                    type: $method,
+                    dataType: 'json',
+                    data: $data,
+                    success: function (data) {
+                        $blog_comment_list.html(data.blog_comment_html);
+                        $this.find('#id_icerik').val('');
+                    },
+                    error: function () {
+                        alert("Bir hata oluştu.")
+                    }
+                })
+
+            });
+            $window.on('click', '#blog-comment-list div.row a.yanitla-button', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $parent = $this.closest('div');
+                var $href = $this.attr('href');
+                var $comment_id = $this.attr('comment_id');
+                $.ajax({
+                    url: $href,
+                    type: "GET",
+                    dataType: "json",
+                    data: {comment_id: $comment_id},
+                    success: function (data) {
+                        var $form_html = data.form_html;
+                        $parent.find('.child-form-container').html($form_html);
+                    },
+                    error: function () {
+
+                    }
+                })
+            })
+        })
+    </script>
+
+
+
+
+
+
 
 </head>
 
@@ -56,19 +111,20 @@
     {% if request.user.is_authenticated %}
         <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown user-account">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="user-image" style="background-image:url({{ request.user.profile_image }})" ></span> Welcome, {{ request.user.first_name }}
+                <a class="nav-link dropdown-toggle" href="{% url 'retrieve' request.user.username %}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="user-image rounded-circle" style="background-image:url({{ request.user.profile_image.url }})" ></span> Welcome, {{ request.user.first_name }}
                 </a>
                 <div class="dropdown-menu">
                     <a href="{% url 'retrieve' request.user.username %}" class="dropdown-item">Per. Information</a>
                     <a href="{% url 'updateprofile' request.user.username %}" class="dropdown-item">Update Profile</a>
-                    <a href="{% url 'dashboard' %}" class="dropdown-item">Dashboard</a>
+                    <a href="{% url 'dashboard' 'all'%}" class="dropdown-item">Dashboard</a>
                     <a href="{% url 'account_change_password' %}" class="dropdown-item">Change Password</a>
                     <a href="{% url 'account_logout' %}" class="dropdown-item">Logout</a>
 
                 </div>
             </li>
             <li class="nav-item"><a class="nav-link nav-btn" href="{% url 'addarticle' %}"><span><i class="fa fa-plus" aria-hidden="true"></i>Add Post</span></a></li>
+
         </ul>
     {% else %}
         <ul class="navbar-nav ml-auto">

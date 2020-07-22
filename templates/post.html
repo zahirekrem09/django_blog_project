@@ -1,10 +1,62 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block script_content %}
+<script type="text/javascript">
+        $(document).ready(function () {
+            var $window = $(this);
+            var $blog_comment_list = $window.find("#blog-comment-list");
+            $window.on('submit', '.comment-form', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $method = $this.attr('method');
+                var $data = $this.serialize();
+                var $url = $this.attr('action');
+
+                $.ajax({
+                    url: $url,
+                    type: $method,
+                    dataType: 'json',
+                    data: $data,
+                    success: function (data) {
+                        $blog_comment_list.html(data.blog_comment_html);
+                        $this.find('#id_icerik').val('');
+                    },
+                    error: function () {
+                        alert("Bir hata oluştu.")
+                    }
+                })
+
+            });
+            $window.on('click', '#blog-comment-list div.row a.yanitla-button', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $parent = $this.closest('div');
+                var $href = $this.attr('href');
+                var $comment_pk = $this.attr('comment_pk');
+                $.ajax({
+                    url: $href,
+                    type: "GET",
+                    dataType: "json",
+                    data: {comment_pk: $comment_pk},
+                    success: function (data) {
+                        var $form_html = data.form_html;
+                        $parent.find('.child-form-container').html($form_html);
+                    },
+                    error: function () {
+
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock script_content %}
+
+
 {% block content %}
 
   <!-- Page Header -->
   <header class="masthead" style="background-image:{% if post.image %} url({{ post.image.url}})  {% endif %}">
-    <div class="overlay"></div>
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
@@ -12,8 +64,8 @@
             <h1>{{post.title}}</h1>
             <h2 class="subheading">{{post.subtitle}}</h2>
             <span class="meta">Posted by
-              <a href="#">{{post.author}}</a>
-              on {{ post.created_at|date:'F d, Y' }}</span>
+              <a href=""><i class="fas fa-edit"></i> {{post.author.first_name}}</a>
+               <i class="fas fa-calendar-alt"></i> {{ post.created_at|date:'F d, Y' }} <i class="fas fa-comments"></i> Comments-({{post.get_blog_comment_count}}) </span>
           </div>
         </div>
       </div>
@@ -27,67 +79,109 @@
         <div class="col-lg-8 col-md-10 mx-auto">
           {{post.content|safe}}
           <a class="btn btn-outline-info float-left" href="{% url 'articles' %}"> &larr;</a>
+          <a class="btn btn-outline-info float-right {% if post.is_favorite %}active{% endif %}" href="{% url 'favorite_post' post.id %}">{% if post.is_favorite %}<i class="fas fa-thumbs-down"></i>{% else %} <i class="fas fa-thumbs-up"></i>{% endif %}</a>
         </div>
 
       </div>
     </div>
-
   </article>
   <hr>
 
-    <!-- Comments Form -->
-    <h4>Yorumlar</h4>
-    {% if comments %}
-      {% for comment in comments  %}
-    <div class="row" style="margin-top: 50px">
-      <div class="col-md-6 offset-md-3">
+    <!-- Comments Form{% if post.is_favorite %}active{% endif %} -->
+    <div class="container">
+        <h2 class="page-header">Yorumlar ({{post.get_blog_new_comment|length }})</h2>
+      <div class="row">
 
-
-      <hr>
-
-        <div class="media mb-4">
-          <div class="media-body">
-            <h5 class="mt-0">{{comment.comment_author}}</h5>
-            {{comment.comment_date|date:'F d, Y'}} <br>
-            {{comment.comment_content}}
-          </div>
+        <div class="col-lg-8 col-md-10 mx-auto" id="blog-comment-list">
+         {% include 'comment/comment-list-partial.html' with post=post  %}
         </div>
-          </div>
-        </div>
-      {% endfor %}
-
-
-      {% else %}
-    <div class="row" style="margin-top: 50px">
-      <div class="col-md-6 offset-md-3">
-        <div class ="alert alert-danger">
-        Bu makaleye herhangi bir yorum yazılmamış,ilk yorum yapan siz olun!
-
       </div>
+        <div class="row" style="margin-top: 50px;">
+            <form class="comment-form" action="{% url 'new-add-comment' post.pk 'post'  %}" method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="row">
+                                <div class="col-lg-2 mx-auto">
+                                    <div class="col-lg-8 col-md-10 mx-auto">
+                                        <img style="height:75px;" class="user-image rounded-circle"
+                                             src="{{ request.user.profile_image.url }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-10 mx-auto">
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            {% for error in field.errors %}
+                                                <span class="text-danger"><b>{{ error }}</b></span>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% if field.help_text %}
+                                                <span class="text-success"><b>{{ field.help_text }}</b></span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="row">
+                            <div class="col-lg-8 col-md-10 mx-auto">
+                                <div class="form-group">
+                                    <input type="submit" value="Yorum Yap" class="float-right btn btn-success">
+                                </div>
+                            </div>
+                        </div>
+            </form>
         </div>
     </div>
 
-      {% endif %}
-
-   <div class="row" style="margin-top: 100px">
-    <div class="col-md-6 offset-md-3">
-      <h5>Yorum Ekle:</h5>
-        <hr>
-        <form method = "POST" action = "{% url 'comment' post.id %}">
-                {% csrf_token %}
-            <div class="form-group">
-                  <label for="formGroupExampleInput">Name</label>
-                  <input name = "comment_author" type="text" class="form-control" id="formGroupExampleInput" placeholder="Add name">
-              </div>
-              <div class="form-group">
-                  <label for="formGroupExampleInput">Yorum</label>
-                <textarea name = "comment_content" class="form-control" rows="3" placeholder="Comment"></textarea>
-              </div>
-          <button type="submit" class="btn btn-danger">Add</button>
-        </form>
-        </div>
-    </div>
 
 
+
+
+     <div class="row">
+                <h2 class="page-header">Yorumlar ({{post.get_blog_new_comment|length }})</h2>
+                <div class="col-lg-12 " id="blog-comment-list">
+                    {% include 'comment/comment-list-partial.html' with post=post  %}
+                </div>
+
+                <div class="row" style="margin-top: 50px;">
+                    <form class="comment-form" action="{% url 'new-add-comment' post.pk 'post'  %}" method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <div class="col-lg-12">
+                                        <img style="height:75px;" class="user-image rounded-circle"
+                                             src="{{ request.user.profile_image.url }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                        {% if field.errors %}
+                                            {% for error in field.errors %}
+                                                <span class="text-danger"><b>{{ error }}</b></span>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% if field.help_text %}
+                                                <span class="text-success"><b>{{ field.help_text }}</b></span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <input type="submit" value="Yorum Yap" class="float-right btn btn-success">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                </div>
   {% endblock content %}
 

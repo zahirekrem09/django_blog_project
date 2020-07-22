@@ -8,11 +8,11 @@ from django.contrib.auth.decorators import login_required
 # Class tabanlı views
 
 
-class BlogPageView(ListView):
-    # paginations
-    paginate_by = 2
-    model = Post
-    template_name = 'articles.html'
+# class BlogPageView(ListView):
+#     # paginations
+#     paginate_by = 2
+#     model = Post
+#     template_name = 'articles.html'
 
 
 # class BlogDetailView(DetailView):

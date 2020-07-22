@@ -17,6 +17,7 @@ Listo v1.0.0
 13.	Sidebar
 14.	Footer
 15.	Demo
+16.Comment
 
 */
 /*	1.	Typography
@@ -67,7 +68,7 @@ h4 {
 	line-height: 31.88px;
 }
 h5 {
-	font-size: 18px;
+	font-size: 20px;
 	line-height: 25.88px;
 }
 h3 small, h4 small, h5 small {
@@ -107,7 +108,7 @@ code:hover {
 }
 p {
 	display: block;
-	font-size: 14px;
+	font-size: 18px;
 	font-weight: normal;
 	letter-spacing: 0.01em;
 	line-height: 22px;
@@ -1567,6 +1568,11 @@ input[type="radio"], input[type="checkbox"] {
 	background-color: #1da1f2;
 	color: #FFF;
 }
+.btn-github, .btn-github:focus, .btn-github:hover, .btn-github:active, .btn-github:active:hover, .btn-github:active:focus {
+	background-color: #563d7c;
+	border-color: #563d7c;
+	color: #ffce40;
+}
 .btn-return {
 	display: inline-block;
 	margin-right: 15px;
@@ -2473,3 +2479,83 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+
+
+/*Comment */
+.comments-main{
+  background: #FFF;
+}
+.comment time, .comment:hover time,.icon-rocknroll, .like-count {
+  -webkit-transition: .25s opacity linear;
+  transition: .25s opacity linear;
+}
+.comments-main ul li{
+  list-style: none;
+}
+.comments .comment {
+  padding: 5px 10px;
+  background: #563d7c;
+}
+.comments .comment:hover time{
+  opacity: 1;
+}
+.comments .user-img img {
+  width: 50px;
+  height: 50px;
+}
+.comments .comment h4 {
+  display: inline-block;
+  font-size: 16px;
+}
+.comments .comment h4 a {
+  color: #1D1E22;
+  text-decoration: none;
+}
+.comments .comment .icon-rocknroll {
+  color: #545454;
+  font-size: .85rem;
+}
+.comments .comment .icon-rocknroll:hover {
+  opacity: .5;
+}
+.comments .comment time,.comments .comment .like-count,.comments .comment .icon-rocknroll {
+  font-size: .75rem;
+  opacity: 0;
+}
+.comments .comment time, .comments .comment .like-count {
+  font-weight: 300;
+}
+.comments .comment p {
+  font-size: 13px;
+}
+.comments .comment p .reply {
+  color: #BFBFA8;
+  cursor: pointer;
+}
+.comments .comment .active {
+  opacity: 1;
+}
+.icon-rocknroll {
+  background: none;
+  outline: none;
+  cursor: pointer;
+  margin: 0 .125rem 0 0;
+}
+.comments .comment:hover .icon-rocknroll,.comments .comment:hover .like-count {
+  opacity: 1;
+}
+.comment-box-main{
+  background: #563d7c;
+}
+@media (min-width: 320px) and (max-width: 480px){
+  .comments .comment h4 {
+    font-size: 12px;
+  }
+  .comments .comment p{
+    font-size: 11px;
+  }
+  .comment-box-main .send-btn button{
+    margin-left: 5px;
+  }
+}
