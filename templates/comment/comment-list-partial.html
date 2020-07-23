@@ -1,14 +1,13 @@
 
 {% if post.get_blog_new_comment %}
+<h2 class="page-header">Yorumlar ({{post.get_blog_new_comment|length}})</h2>
 {% for comment in post.get_blog_new_comment %}
     <div class="row" style="margin-bottom:30px">
-        <div class="col-md-2 mx-auto">
-            <div class="col-lg-12">
+        <div class="col-2 mx-auto">
                 <img style="height: 50px;" class="user-image rounded-circle"
                      src="{{ comment.user.profile_image.url }}">
-            </div>
         </div>
-        <div style="padding-left:0" class="col-lg-8 col-md-10 mx-auto">
+        <div style="padding-left:0" class="col-8 mx-auto">
             <span><b>{{ comment.user.first_name }}</b></span>
             <span>{{ comment.icerik }}</span>
             <br>
@@ -26,10 +25,10 @@
                                      src="{{ child_comment.user.profile_image.url }}">
                             </div>
                             <div class="col-lg-11" style="padding:0;margin-bottom:10px">
-                                <span><b>{{ child_comment.user.first_name }}</b></span>
+                                <span><b>{{ child_comment.user.first_name }}  </b></span>
                                 <span>{{ child_comment.icerik }}</span>
                                 <br>
-                                <span class="pull-right"><b>{{ comment.comment_date|timesince }} ago </b></span>
+                                <span class="pull-right"><b>{{ child_comment.comment_date|timesince }} ago </b></span>
                             </div>
                         </div>
                     {% endfor %}

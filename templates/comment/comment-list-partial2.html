@@ -1,0 +1,54 @@
+{% if post.get_blog_new_comment %}
+{% for comment in post.get_blog_new_comment %}
+
+        <div class="row mt-5">
+            <div class="col-md-6 offset-md-3 col-sm-6 offset-sm-3 col-12 comments-main pt-4 rounded">
+                <ul class="p-0">
+                    <li>
+                        <div class="row comments mb-2">
+                            <div class="col-md-2 col-sm-2 col-3 text-center user-img">
+                                <img id="profile-photo" src="{{ comment.user.profile_image.url }}" class="rounded-circle" />
+                            </div>
+                            <div class="col-md-9 col-sm-9 col-9 comment rounded mb-2">
+                                <h4 class="m-0"><a href="#">{{ comment.user.first_name }}</a></h4>
+                                <time class="text-white ml-3">{{ comment.comment_date|timesince }} ago</time>
+                                <p class="mb-0 text-white">{{ comment.icerik }}</p>
+                                 <a comment_pk="{{ comment.pk }}" href="{% url 'get-child-comment-form' %}" class="yanitla-button">Yanıtla</a>
+                            </div>
+                        </div>
+                    </li>
+                    {% if comment.is_parent %}
+                    {% for child_comment in comment.get_child_comment %}
+                    <ul class="p-0">
+                        <li>
+                            <div class="row comments mb-2">
+                                <div class="col-md-2 offset-md-2 col-sm-2 offset-sm-2 col-3 offset-1 text-center user-img">
+                                    <img id="profile-photo" src="{{ child_comment.user.profile_image.url }}" class="rounded-circle" />
+                                </div>
+                                <div class="col-md-7 col-sm-7 col-8 comment rounded mb-2">
+                                    <h4 class="m-0"><a href="#">{{ child_comment.user.first_name }}</a></h4>
+                                    <time class="text-white ml-3">{{ comment.comment_date|timesince }} ago</time>
+                                    <like></like>
+                                    <p class="mb-0 text-white">{{ child_comment.icerik }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+                <div class="child-form-container">
+                </div>
+            </div>
+            </div>
+    {% endfor %}
+ {% else %}
+    <div class="row" style="margin-top: 50px">
+      <div class="col-lg-8 ">
+        <div class ="alert alert-danger">
+        No comments have been written on this article, be the first to comment!
+      </div>
+        </div>
+    </div>
+      {% endif %}
+

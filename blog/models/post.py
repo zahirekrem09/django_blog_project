@@ -53,6 +53,17 @@ class Post(models.Model):
     def get_blog_comment_count(self):
         return len(self.get_blog_new_comment())
 
+    def get_favorite_count(self):
+        favori_sayisi = self.favorite_blog.count()
+        return favori_sayisi
+
+    def get_added_favorite_user_as_object(self):
+        data_list = []
+        qs = self.favorite_blog.all()
+        for obj in qs:
+            data_list.append(obj.user)
+        return data_list
+
 
 # class Comment(models.Model):
 #     post = models.ForeignKey(
@@ -124,3 +135,16 @@ class NewComment(models.Model):
                 content_type=content_type, object_id=self.id)
             return all_child_comment
         return None
+
+
+class FavoriteBlog(models.Model):
+    user = models.ForeignKey(to="blog.User", null=True,
+                             default=1, related_name='favorite_blog', on_delete=models.CASCADE)
+    post = models.ForeignKey(
+        Post, null=True, related_name='favorite_blog', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Favorilere Eklenen Gönderiler'
+
+    def __str__(self):
+        return "%s %s" % (self.user, self.post)

@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse, Http404
-from blog.models import Post, Comment, NewComment
+from blog.models import Post, Comment, NewComment, FavoriteBlog
 from django.contrib.auth.decorators import login_required
 from blog.forms import PostForm, CommentForm
 from django.contrib import messages
 from django.db.models import Q
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
-#from django.utils.text import slugify
+# from django.utils.text import slugify
 
 
 @login_required(login_url="account_login")
@@ -21,11 +21,11 @@ def addarticle(request):
 
         # slug ekleme(1. method)
         # post.save(commit=False)
-        #post.slug = slugify(post.title.replace('ı','i'))
+        # post.slug = slugify(post.title.replace('ı','i'))
         # post.save()
-
-        messages.success(request, "Makale Başarı ile Oluşturuldu")
-        return redirect("dashboard", filter_by="all")
+        messages.success(request, "Article Created Successfully")
+        return HttpResponseRedirect(reverse('dashboard', kwargs={"filter_by": 'all'}))
+        # return redirect("dashboard", filter_by="all")
     return render(request, "addarticle.html", {"form": form})
 
 
@@ -40,8 +40,9 @@ def updateArticle(request, id):
         post = form.save(commit=False)
         post.author = request.user
         post.save()
-        messages.success(request, "Makale Başarı ile Güncellendi")
-        return redirect("dashboard", filter_by="all")
+        messages.success(request, "Article Updated Successfully")
+        return HttpResponseRedirect(reverse('dashboard', kwargs={"filter_by": 'all'}))
+        # return redirect("dashboard", filter_by="all")
     return render(request, "update.html", {"form": form})
 
 
@@ -49,7 +50,7 @@ def updateArticle(request, id):
 def deleteArticle(request, id):
     post = get_object_or_404(Post, id=id)
     post.delete()
-    messages.success(request, "Makale Başarı ile Silindi")
+    messages.success(request, "Article Successfully Deleted")
     return redirect("dashboard", filter_by="all")
 
 
@@ -75,23 +76,36 @@ def deleteArticle(request, id):
 
 def detail(request, id):
     form = CommentForm()
-    #post = Post.objects.filter(id=id).first()
+    # post = Post.objects.filter(id=id).first()
     post = get_object_or_404(Post, id=id)
-    #comments = post.comments.all()
+    # comments = post.comments.all()
 
     return render(request, "post.html", {"post": post, "form": form})
 
 
-def articles(request):
+def articles(request, filter_by):
     articles_list = Post.objects.all()
     # Search
     keyword = request.GET.get("keyword")
     if keyword:
-        #articles_list = Post.objects.filter(title__contains=keyword)
+        # articles_list = Post.objects.filter(title__contains=keyword)
         articles_list = Post.objects.filter(
             Q(title__contains=keyword) |
             Q(content__contains=keyword)
         ).distinct()
+    if filter_by == 'favorites':
+        articles_list = []
+        for article in FavoriteBlog.objects.filter(user=request.user):
+            articles_list.append(article.post)
+
+            # Ara kısmı favoriler için
+        if keyword:
+            article_id = []
+            for article in FavoriteBlog.objects.filter(user=request.user):
+                article_id.append(article.post.id)
+                print(article_id)
+                articles_list = Post.objects.filter(
+                    Q(id__in=article_id) & (Q(title__contains=keyword) | Q(content__contains=keyword))).distinct()
 
         # return render(request,"articles.html",{"articles":articles})
 
@@ -99,7 +113,7 @@ def articles(request):
     paginator = Paginator(articles_list, 3)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
-    return render(request, "articles.html", {"articles": articles})
+    return render(request, "articles.html", {"articles": articles, 'filter_by': filter_by})
 
 
 def favorite_post(request, id):
@@ -142,6 +156,7 @@ def dashboard(request, filter_by):
     })
 
 
+@login_required(login_url="account_login")
 def get_child_comment_form(request):
     data = {'form_html': ''}
     pk = request.GET.get('comment_pk')
@@ -159,6 +174,7 @@ def get_child_comment_form(request):
     return JsonResponse(data=data)
 
 
+@login_required(login_url="account_login")
 def new_add_comment(request, pk, model_type):
     data = {'is_valid': True, 'blog_comment_html': '', 'model_type': model_type}
     nesne = None
@@ -187,5 +203,69 @@ def new_add_comment(request, pk, model_type):
     data.update({
         'blog_comment_html': comment_html
     })
+    #messages.success(request, "Commet succesfuly")
 
     return JsonResponse(data=data)
+
+
+@login_required(login_url="account_login")
+def add_or_remove_favorite(request, id):
+    # data = {'count': 0, 'status': 'deleted'}
+    post = get_object_or_404(Post, id=id)
+    favori_blog = FavoriteBlog.objects.filter(
+        post=post, user=request.user)
+    if favori_blog.exists():
+        favori_blog.delete()
+    else:
+        FavoriteBlog.objects.create(post=post, user=request.user)
+        post.is_favorite = True
+        post.save()
+        # data.update({'status': 'added'})
+    count = post.get_favorite_count()
+    #data.update({'count': count})
+    if count > 0:
+        post.is_favorite = True
+    else:
+        post.is_favorite = False
+    post.save()
+    # return JsonResponse(data=data)
+    # favori_blog_list = []
+    # favori_blog_list_post = []
+    # for i in FavoriteBlog.objects.all():
+    #     favori_blog_list.append(i.user.username)
+    #     favori_blog_list_post.append((i.post.title, i.post.is_favorite))
+    # print(favori_blog_list)
+    # print(favori_blog_list_post)
+
+    # burası olmadı tekrar bakılıcak
+    articles_list = Post.objects.all()
+    paginator = Paginator(articles_list, 3)
+    page = request.GET.get('page')
+    articles = paginator.get_page(page)
+    messages.success(request, "Article Successfully Added to Favorites")
+    return render(request, "articles.html", {"articles": articles})
+    # return redirect("articles")
+
+
+# @login_required(login_url="account_login")
+# def post_list_favorite_user(request, id):
+#     page = request.GET.get('page', 1)
+#     blog = get_object_or_404(Blog, slug=id)
+#     user_list = post.get_added_favorite_user_as_object()
+#     paginator = Paginator(user_list, 1)
+#     try:
+#         user_list = paginator.page(page)
+#     except PageNotAnInteger:
+#         user_list = paginator.page(1)
+#     except EmptyPage:
+#         user_list = paginator.page(paginator.num_pages)
+#     my_fallowed_user = Fallowing.get_fallowed_username(request.user)
+#     html = render_to_string('blog/include/favorite/favorite-user-list.html',
+#                             context={'my_fallowed_user': my_fallowed_user,
+#                                      'user_list': user_list},
+#                             request=request)
+
+#     page_html = render_to_string('blog/include/favorite/buttons/show_more_button.html',
+#                                  context={'post': blog, 'user_list': user_list}, request=request)
+
+#     return JsonResponse(data={'html': html, 'page_html': page_html})

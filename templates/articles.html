@@ -1,18 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
+
+
+
 {% block content %}
 <!-- Main Content -->
   <div class="container" style="margin-top: 150px">
     <div class="row">
+      {% include 'favorite/favorite-modal.html' %}
       <div class="col-lg-8 col-md-10 mx-auto">
+
         <h3>Articles</h3>
-            <hr>
+        <a href="{% url 'articles' 'favorites'%}"  class="btn btn-outline-info {% if filter_by == 'favorites' %}active{% endif %} "><i class="fas fa-star" aria-hidden="true"></i>Favorites</a>
+        <a href="{% url 'articles' 'all'%}"  class="btn btn-outline-info {% if filter_by == 'all' %}active{% endif %} "><i class="fas fa-arrows-alt" aria-hidden="true"></i>View All</a>
+
+  <hr>
   </div>
   <!-- Search -->
-  <form>
+  <form  class="form-inline mr-auto">
     {% csrf_token %}
-    <input type="text" name = "keyword" class="input-md" maxlength="64" placeholder="Search..." value="{{request.GET.keyword}}">
-    <button type="submit" class="btn btn-outline-warning btn-sm"><i class="fas fa-search"></i>Search</button>
+    <input type="text" name = "keyword" class="input-md form-control mr-sm-2" maxlength="64" placeholder="Search..." value="{{request.GET.keyword}}">
+    <button type="submit" class="btn btn-outline-warning btn-sm"><i class="fas fa-search"></i></button>
   </form>
 </div>
 
@@ -25,6 +33,16 @@
                 <h2 class="post-title">
                   {{ post.title }}
                 </h2>
+                <a href="{% url 'add-remove-favorite' post.id %}"
+                                   class="add-favorite-button btn btn-outline-success {% if post.get_favorite_count > 0 %}active{% endif %}">
+                                    <i class="fas fa-star {% if post.get_favorite_count %}active{% endif %}">{% if post.get_favorite_count > 0 %}<span class="badge badge-light">{{post.get_favorite_count}}</span>{% endif %} </i>
+                </a>
+                <p class="post-meta">Favitite by
+                {%for favorite in post.get_added_favorite_user_as_object %}
+                {{ favorite.first_name }}
+                {%endfor%}
+                </p>
+
                 <h3 class="post-subtitle">
                   {{ post.subtitle }}
                 </h3>

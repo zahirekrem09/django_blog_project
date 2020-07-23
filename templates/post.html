@@ -78,8 +78,12 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           {{post.content|safe}}
-          <a class="btn btn-outline-info float-left" href="{% url 'articles' %}"> &larr;</a>
-          <a class="btn btn-outline-info float-right {% if post.is_favorite %}active{% endif %}" href="{% url 'favorite_post' post.id %}">{% if post.is_favorite %}<i class="fas fa-thumbs-down"></i>{% else %} <i class="fas fa-thumbs-up"></i>{% endif %}</a>
+          <a class="btn btn-outline-info float-left" href="{% url 'articles' 'all' %}"> &larr;</a>
+          {% if request.user == post.author%}
+          <td><a href="{% url 'update' post.id %}" class="btn btn-outline-info float-right">Update</a></td>
+          {%else%}
+          <a class="btn btn-outline-info float-right {% if post.is_favorite %}active{% endif %}" href="{% url 'add-remove-favorite' post.id %}">{% if post.is_favorite %}<i class="fas fa-thumbs-down"></i>{% else %} <i class="fas fa-thumbs-up"></i>{% endif %}</a>
+        {%endif%}
         </div>
 
       </div>
@@ -89,25 +93,31 @@
 
     <!-- Comments Form{% if post.is_favorite %}active{% endif %} -->
     <div class="container">
-        <h2 class="page-header">Yorumlar ({{post.get_blog_new_comment|length }})</h2>
-      <div class="row">
 
-        <div class="col-lg-8 col-md-10 mx-auto" id="blog-comment-list">
+
+         <!-- <div class="row comment-box-main p-3 rounded-bottom" >
+                    <div class="col-md-9 col-sm-9 col-9 pr-0 comment-box" id="blog-comment-list">
+                      {% include 'comment/comment-list-partial2.html' with post=post  %}
+                    </div>
+
+                </div> -->
+
+      <div class="row mt-5">
+
+        <div class="ccol-md-9 col-sm-9 col-9 pr-0 mx-auto" id="blog-comment-list">
          {% include 'comment/comment-list-partial.html' with post=post  %}
         </div>
       </div>
-        <div class="row" style="margin-top: 50px;">
+      <div class="form-container">
+
+        <div class="row mt-5" style="margin-top: 50px;">
+          <div class="col-md-9 col-sm-9 col-9 pr-0 mx-auto">
+
             <form class="comment-form" action="{% url 'new-add-comment' post.pk 'post'  %}" method="post">
                         {% csrf_token %}
                         {% for field in form %}
                             <div class="row">
-                                <div class="col-lg-2 mx-auto">
-                                    <div class="col-lg-8 col-md-10 mx-auto">
-                                        <img style="height:75px;" class="user-image rounded-circle"
-                                             src="{{ request.user.profile_image.url }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-10 mx-auto">
+                                <div class="col-12">
                                     <div class="form-group">
                                         {{ field.label_tag }}
                                         {{ field }}
@@ -124,64 +134,16 @@
                                 </div>
                             </div>
                         {% endfor %}
-                        <div class="row">
-                            <div class="col-lg-8 col-md-10 mx-auto">
-                                <div class="form-group">
-                                    <input type="submit" value="Yorum Yap" class="float-right btn btn-success">
-                                </div>
-                            </div>
-                        </div>
+                        <div class="row text-right" >
+                        <div class="col-md-12 col-sm-12 col-11 pr-0 mx-auto float-left">
+                        <button type="submit" class="btn btn-info">Send</button>
+                    </div>
+                    </div>
             </form>
+            </div>
+        </div>
         </div>
     </div>
 
-
-
-
-
-     <div class="row">
-                <h2 class="page-header">Yorumlar ({{post.get_blog_new_comment|length }})</h2>
-                <div class="col-lg-12 " id="blog-comment-list">
-                    {% include 'comment/comment-list-partial.html' with post=post  %}
-                </div>
-
-                <div class="row" style="margin-top: 50px;">
-                    <form class="comment-form" action="{% url 'new-add-comment' post.pk 'post'  %}" method="post">
-                        {% csrf_token %}
-                        {% for field in form %}
-                            <div class="row">
-                                <div class="col-lg-2">
-                                    <div class="col-lg-12">
-                                        <img style="height:75px;" class="user-image rounded-circle"
-                                             src="{{ request.user.profile_image.url }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-10">
-                                    <div class="form-group">
-                                        {{ field.label_tag }}
-                                        {{ field }}
-                                        {% if field.errors %}
-                                            {% for error in field.errors %}
-                                                <span class="text-danger"><b>{{ error }}</b></span>
-                                            {% endfor %}
-                                        {% else %}
-                                            {% if field.help_text %}
-                                                <span class="text-success"><b>{{ field.help_text }}</b></span>
-                                            {% endif %}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <input type="submit" value="Yorum Yap" class="float-right btn btn-success">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                </div>
   {% endblock content %}
 

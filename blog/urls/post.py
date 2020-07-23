@@ -5,9 +5,9 @@ from django.conf.urls import url
 from blog.views.article import (dashboard, addarticle,
                                 updateArticle, deleteArticle,
                                 detail, articles,
-                                favorite_post, new_add_comment, get_child_comment_form)
+                                favorite_post, new_add_comment, get_child_comment_form, add_or_remove_favorite)
 urlpatterns = [
-    path('', view=articles, name="articles"),
+    path('<str:filter_by>', view=articles, name="articles"),
     #path('', BlogPageView.as_view(), name='articles'),
     #path('post/<int:id>', BlogDetailView.as_view(), name='post'),
     path('post/<int:id>/', view=detail, name='post'),
@@ -26,6 +26,9 @@ urlpatterns = [
         name='get-child-comment-form'),
     url(r'^new-add-comment/(?P<pk>[0-9]+)/(?P<model_type>[\w]+)/$',
         view=new_add_comment, name='new-add-comment'),
+
+    path('add-remove-favorite/<int:id>',
+        view=add_or_remove_favorite, name='add-remove-favorite'),
 
 
     #path('new-add-comment/<int:id>/<str:model_type>',view=new_add_comment, name="new-add-comment"),
@@ -47,4 +50,4 @@ urlpatterns = [
 #url(r'^(?P<album_id>[0-9]+)/favorite_album/$', views.favorite_album, name='favorite_album'),
 #url(r'^new-add-comment/(?P<pk>[0-9]+)/(?P<model_type>[\w]+)/$', new_add_comment, name='new-add-comment'),
 #url(r'^get-child-comment-form/$', view=get_child_comment_form, name='get-child-comment-form'),
-# ]
+# url(r'^add-remove-favorite/(?P<pk>[0-9]+)/$', add_or_remove_favorite, name='add-remove-favorite'), ]

@@ -1,7 +1,7 @@
 
 from django.contrib import admin
 from blog.models import (Post, Comment,
-                         User,
+                         User, FavoriteBlog,
                          Interest, NewComment)
 
 # Register your models here.
@@ -10,6 +10,7 @@ admin.site.register(Comment)
 admin.site.register(NewComment)
 admin.site.register(User)
 admin.site.register(Interest)
+admin.site.register(FavoriteBlog)
 
 # slug için
 # class PostAdmin(admin.ModelAdmin):

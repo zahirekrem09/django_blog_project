@@ -25,7 +25,7 @@
         <td><a href="{% url 'post' post.id %}">{{post.title}}</a>  </td>
         <td>{{post.created_at|date:'F d, Y'}}</td>
         <td>
-          <a href="{% url 'favorite_post' post.id %}" class="btn btn-outline-success {% if post.is_favorite %}active{% endif %}">
+          <a href="" class="btn btn-outline-success {% if post.is_favorite %}active{% endif %}">
             <i class="fas fa-star {% if post.is_favorite %}active{% endif %}"></i></a>
         </td>
         <td><a href="{% url 'update' post.id %}" class="btn btn-outline-info">Update</a></td>
