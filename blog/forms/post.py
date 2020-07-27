@@ -1,7 +1,6 @@
 from django import forms
 from blog.models.post import Post, Comment, NewComment
 
-
 class PostForm(forms.ModelForm):
 
     class Meta:

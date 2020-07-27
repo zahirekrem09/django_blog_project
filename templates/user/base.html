@@ -16,6 +16,7 @@
                                         <a href="{% url 'updateprofile' request.user.username %}" class="list-group-item {% if request.resolver_match.url_name == "updateprofile" %} active {% endif %}  "><i class="fas fa-user-edit"></i>Update Profile</a>
                                         <a href="{% url 'dashboard' 'all' %}" class="list-group-item {% if request.resolver_match.url_name == "dashboard" %} active {% endif %} "><i class="fas fa-pager"></i>Dashboard</a>
                                         <a href="{% url 'account_change_password' %}" class="list-group-item {% if request.resolver_match.url_name == "account_change_password" %} active {% endif %} "><i class="icon fas  fa-lock"></i>Change Password</a>
+                                        <a href="{% url 'account_reset_password' %}" class="list-group-item {% if request.resolver_match.url_name == "account_reset_password" %} active {% endif %} "><i class="icon fas  fa-lock"></i>Reset Password</a>
 
                                         <a href="{% url 'account_logout' %}" class="list-group-item {% if request.resolver_match.url_name == "account_logout" %} active {% endif %} "><i class="fas fa-sign-out-alt"></i>Logout</a>
                                     </div>

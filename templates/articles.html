@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block script_content %}
+<script type="text/javascript">
+$(window).scroll(function() {
+  sessionStorage.scrollTop = $(this).scrollTop();
+});
 
+$(document).ready(function() {
+  if (sessionStorage.scrollTop != "undefined") {
+    $(window).scrollTop(sessionStorage.scrollTop);
+  }
+});
+    </script>
+{% endblock script_content %}
 
 
 {% block content %}
@@ -77,7 +89,7 @@
               {% endif %}
 
               {% if articles.has_previous %}
-                <a class="btn btn-outline-info " href="/articles/">&laquo;</a>
+                <a class="btn btn-outline-info " href="{% url 'articles' 'all'%}" >&laquo;</a>
                 <a class="btn btn-outline-info " href="?page={{articles.previous_page_number}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> &lsaquo;</a>
               {% endif %}
 

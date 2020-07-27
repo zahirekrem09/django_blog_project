@@ -25,6 +25,7 @@ urlpatterns = [
     path('auth/', include('allauth.urls')),
     path('user/', include('blog.urls.user')),
     path('articles/', include('blog.urls.post')),
+    #path('articler/', include('blog.urller')),
     path('', view=index, name="index"),
     path('about/', view=about, name="about"),
     path('contact/', include('contact.urls')),

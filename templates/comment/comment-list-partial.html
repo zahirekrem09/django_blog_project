@@ -1,6 +1,6 @@
 
 {% if post.get_blog_new_comment %}
-<h2 class="page-header">Yorumlar ({{post.get_blog_new_comment|length}})</h2>
+<h2 class="page-header">Yorumlar ({{post.get_blog_comment_count}})</h2>
 {% for comment in post.get_blog_new_comment %}
     <div class="row" style="margin-bottom:30px">
         <div class="col-2 mx-auto">
@@ -13,7 +13,7 @@
             <br>
             <span class="pull-right"><b>{{ comment.comment_date|timesince }} ago </b></span>
             <a comment_pk="{{ comment.pk }}" href="{% url 'get-child-comment-form' %}" class="yanitla-button">
-                Yanıtla
+                Reply
             </a>
 
             <div>

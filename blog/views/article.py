@@ -243,8 +243,9 @@ def add_or_remove_favorite(request, id):
     page = request.GET.get('page')
     articles = paginator.get_page(page)
     messages.success(request, "Article Successfully Added to Favorites")
-    return render(request, "articles.html", {"articles": articles})
-    # return redirect("articles")
+    # return render(request, "articles.html", {"articles": articles})
+    # return redirect(reverse("blog:post", kwargs={"id": id}))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 # @login_required(login_url="account_login")

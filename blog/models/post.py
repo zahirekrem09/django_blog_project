@@ -51,7 +51,20 @@ class Post(models.Model):
         return self.comment.all()
 
     def get_blog_comment_count(self):
-        return len(self.get_blog_new_comment())
+        #b = NewComment.objects.filter(object_id=self.id)
+        all_child_comment_list = []
+        for i in list(self.get_blog_new_comment()):
+            if i.is_parent:
+                for j in list(i.get_child_comment()):
+                    all_child_comment_list.append(j.get_child_comment())
+                #content_type = ContentType.objects.get_for_model(i.__class__)
+                #all_child_comment_list.append(NewComment.objects.filter(content_type=content_type, object_id=i.id))
+
+        # print(all_child_comment_list)
+        # print(len(all_child_comment_list))
+        # print(len(b))
+        # return len(self.get_blog_new_comment())
+        return len(self.get_blog_new_comment()) + len(all_child_comment_list)
 
     def get_favorite_count(self):
         favori_sayisi = self.favorite_blog.count()
@@ -119,7 +132,7 @@ class NewComment(models.Model):
     class Meta:
         verbose_name_plural = "iç içe yorum"
 
-    @classmethod
+    @ classmethod
     def add_comment(cls, nesne, model_type, user, icerik):
         content_type = ContentType.objects.get_for_model(nesne.__class__)
         cls.objects.create(user=user, icerik=icerik,

@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Main Content -->
+
+<div class="container cta-100" style="margin-top: 100px;padding-left: 8%;padding-top: 7%;">
+  <div class="row" style="margin-top: -100px;padding-left: 8%;padding-top: 7%;">
+      {% include 'favorite/favorite-modal.html' %}
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <h3>Articles</h3>
+        <a href="{% url 'articles' 'favorites'%}"  class="btn btn-outline-info {% if filter_by == 'favorites' %}active{% endif %} "><i class="fas fa-star" aria-hidden="true"></i>Favorites</a>
+        <a href="{% url 'articles' 'all'%}"  class="btn btn-outline-info {% if filter_by == 'all' %}active{% endif %} "><i class="fas fa-arrows-alt" aria-hidden="true"></i>View All</a>
+  </div>
+  <!-- Search -->
+  <form  class="form-inline mr-auto">
+    {% csrf_token %}
+    <input type="text" name = "keyword" class="input-md form-control mr-sm-2" maxlength="64" placeholder="Search..." value="{{request.GET.keyword}}">
+    <button type="submit" class="btn btn-outline-warning btn-sm"><i class="fas fa-search"></i></button>
+  </form>
+</div>
+<hr>
+  <div class="container">
+    <div class="row blog">
+            <div class="col-md-12">
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="row">
+                      {% if articles  %}
+                      {% for post in articles %}
+                      <div class="col-md-4" style="padding-bottom:20px;">
+                        <div class="item-box-blog" style="border: 1px solid #dadada;text-align: center;z-index: 4;padding: 20px;">
+                          <div class="item-box-blog-image" style="position: relative;">
+                            <!--Date-->
+                            <div class="item-box-blog-date bg-blue-ui white" style="color: #fff !important;  position: absolute;
+  z-index: 5;
+  padding: 4px 20px;
+  top: -20px;
+  right: 8px;
+  background-color: #41cb52;" > <span class="mon" style="  color: #fff;font-size: 18px;
+  display: block;
+  text-align: center;
+  line-height: 1.2;"><i class="fas fa-calendar-alt"></i> {{ post.created_at|date:'F d, Y' }}</span> </div>
+                            <!--Image-->
+                            <figure> <a href="{% url 'post' post.pk %}"> <img style="width:300px;height: auto;width: 100%;"
+                              alt="" src="{{post.image.url}}"></a>
+                                </figure>
+                          </div>
+                          <div class="item-box-blog-body" style="padding: 10px;">
+                            <!--Heading-->
+                            <div class="item-box-blog-heading">
+                              <a href="{% url 'post' post.pk %}" tabindex="0" style="text-decoration: none;">
+                                <h5 style="  margin: 0;
+  line-height: 1;
+  text-decoration:none;
+  transition: color 0.3s;">{{ post.title }}</h5>
+                              </a>
+                            </div>
+                            <!--Data-->
+                            <div class="item-box-blog-data" ">
+                              <p style="font-size: 12px;"><i class="fas fa-edit"></i> {{ post.author }}, <i class="fas fa-comments"></i> Comments({{post.get_blog_comment_count}}),<i class="fas fa-star {% if post.get_favorite_count %}active{% endif %}">{% if post.get_favorite_count > 0 %}<span class="badge badge-light">{{post.get_favorite_count}}</span>{% endif %}</i></p>
+                            </div>
+                            <!--Text-->
+                            <div class="item-box-blog-text" style="overflow: hidden;margin-top: 20px">
+
+                              <p style="font-size: 14px;margin-top: -30px">{{post.content|safe|truncatewords:10}}</p>
+                            </div>
+                            <div class="mt" style="float: left;margin-top: -20px;padding-top: 20px;"> <a href="{% url 'post' post.pk %}" tabindex="0" class="btn bg-blue-ui white read" style="background-color: #708198 !important;color: #fff !important;cursor: pointer;
+  padding: 4px 20px;
+  float: left;
+  margin-top: 10px;">read more</a> </div>
+                            <!--Read More Button-->
+                          </div>
+                        </div>
+                      </div>
+                      {%endfor%}
+                    </div>
+                    <!--.row-->
+                  </div>
+                  <!--.item-->
+                </div>
+                <!--.carousel-inner-->
+              </div>
+              <!--.Carousel-->
+            </div>
+  {% else %}
+<div class="row">
+  <div class="col-md-10 offset-md-3">
+    <div class="col-lg-8">
+      <div  class="alert alert-warning">
+        Makale bulunamadı
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+        <!-- Pager  sayfalama  -->
+        <div class="clearfix">
+              {% if articles.number == 1 %}
+                 <a class="btn btn-outline-info float-left" href="?page=2{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}">Older Posts &rarr;</a>
+              {% endif %}
+
+              {% if articles.has_previous %}
+                <a class="btn btn-outline-info " href="{% url 'articles' 'all'%}" >&laquo;</a>
+                <a class="btn btn-outline-info " href="?page={{articles.previous_page_number}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> &lsaquo;</a>
+              {% endif %}
+
+              {% for num in articles.paginator.page_range %}
+
+                {% if articles.number == num and articles.number != 1  %}
+                 <a class="btn btn-outline-info " href="?page={{num}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> {{num}} </a>
+                {% endif %}
+              {%endfor%}
+
+              {% if articles.has_next and articles.number != 1 %}
+                <a class="btn btn-outline-info " href="?page={{articles.next_page_number}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> &rsaquo;</a>
+                <a class="btn btn-outline-info " href="?page={{articles.paginator.num_pages}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> &raquo;</a>
+              {% endif %}
+
+
+        </div>
+{% endblock content %}
+
+
+
+
+
+
+
