@@ -1,10 +1,13 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from blog.models import User
-from blog.forms import CustomUserForm
+from blog.forms import CustomUserForm, UserProfileUpdateForm
 from django.contrib import messages
 
+from django.http import JsonResponse, HttpResponseRedirect
 
+
+@login_required(login_url="account_login")
 def retrieve(request, username):
     users = User.objects.prefetch_related('interests')
     user = get_object_or_404(users, username=username)
@@ -44,6 +47,25 @@ def updateUser(request, username):
     if form.is_valid():
         user = form.save()
         user.save()
-        messages.success(request, "Profil Başarı ile Güncellendi")
-        return redirect("retrieve", username=username)
+        messages.success(request, "Profile Updated Successfully")
+        return HttpResponseRedirect(reverse('retrieve', kwargs={'username': user.username}))
+        # return redirect("retrieve", username=username)
     return render(request, "user/updateprofile.html", {"form": form})
+
+
+# olmadı
+# @login_required(login_url="account_login")
+# def user_upload_photo(request):
+#     #user = get_object_or_404(users, username=username)
+#     if request.method == "POST":
+#         form = UserProfileUpdateForm(
+#             instance=request.user.profile_image.url, data=request.POST, files=request.FILES or None)
+#         if form.is_valid():
+#             user = form.save(commit=True)
+#             data = {'is_valid': True, 'image-url': user.profile_image.url,
+#                     'success': 'Profile Foto Updated Successfully'}
+#         else:
+#             data = {'is_valid': False}
+#         return JsonResponse(data)
+#     else:
+#         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

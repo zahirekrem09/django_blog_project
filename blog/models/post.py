@@ -2,6 +2,14 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from blog.choices import CategoryChoices
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class Post(models.Model):
@@ -14,6 +22,10 @@ class Post(models.Model):
         auto_now_add=True, verbose_name="Created Date")
     image = models.FileField(
         upload_to='images/', blank=True, null=True, verbose_name="Post İmage", default="/images/post-sample-image.jpg")
+
+    #category = models.ForeignKey(Category, on_delete=models.CASCADE,null=True)
+    category = models.ManyToManyField(to=Category)
+    views = models.IntegerField(default=0)
 
     is_favorite = models.BooleanField(default=False)
 
@@ -59,10 +71,6 @@ class Post(models.Model):
                     all_child_comment_list.append(j.get_child_comment())
                 #content_type = ContentType.objects.get_for_model(i.__class__)
                 #all_child_comment_list.append(NewComment.objects.filter(content_type=content_type, object_id=i.id))
-
-        # print(all_child_comment_list)
-        # print(len(all_child_comment_list))
-        # print(len(b))
         # return len(self.get_blog_new_comment())
         return len(self.get_blog_new_comment()) + len(all_child_comment_list)
 
@@ -76,6 +84,9 @@ class Post(models.Model):
         for obj in qs:
             data_list.append(obj.user)
         return data_list
+
+    def get_category(self):
+        return self.category.all().first()
 
 
 # class Comment(models.Model):
@@ -161,3 +172,16 @@ class FavoriteBlog(models.Model):
 
     def __str__(self):
         return "%s %s" % (self.user, self.post)
+
+
+# class Category(models.Model):
+#     name = models.PositiveIntegerField(
+#         null=True, choices=CategoryChoices.CHOICES)
+#     post = models.ForeignKey(
+#         Post, null=True, related_name='category', on_delete=models.CASCADE)
+
+#     class Meta:
+#         verbose_name = "Categories"
+
+#     def __str__(self):
+#         return self.name

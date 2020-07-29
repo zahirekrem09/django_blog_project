@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'crispy_forms',
     'django_cleanup',
+    'tempus_dominus',
 
 
 
@@ -179,6 +180,8 @@ AUTH_USER_MODEL = "blog.User"
 ACCOUNT_FORMS = {'signup': 'blog.forms.CustomSignupForm'}
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 #RECAPTCHA_PUBLIC_KEY = '6LfyirMZAAAAAFBYWbBRqg_SdINlRXyC3HhjBykR'

@@ -1,6 +1,6 @@
 
 {% if post.get_blog_new_comment %}
-<h2 class="page-header">Yorumlar ({{post.get_blog_comment_count}})</h2>
+<h2 class="page-header">Comments ({{post.get_blog_comment_count}})</h2>
 {% for comment in post.get_blog_new_comment %}
     <div class="row" style="margin-bottom:30px">
         <div class="col-2 mx-auto">

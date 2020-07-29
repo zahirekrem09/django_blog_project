@@ -1,0 +1,33 @@
+<div class="container">
+    <h2>Comments</h2>
+    <div class="my-2">
+        {% if user.is_authenticated %}
+          <form action="/blog/postComment" method="post">
+        {%csrf_token%}
+        <div class="form-group">
+            <label for="">Post Commnet</label>
+            <input type="text" name = 'comment' placeholder="enter comment here">
+        </div>
+        <input type="hidden" name = 'postId' value="{{post.id}}">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+
+        {%else%}
+        <p>Login plase</p>
+
+        {%endif%}
+
+    </div>
+    {% for comment in commnets %}
+    <div class="row my-3">
+        <div class="col-md-1 bg-success">
+             <img class="rounded mx-auto d-block w-100 p-2" src="/static/img/user.png" alt="user">
+        </div>
+        <div class="col-md-11 bg-primary">
+            <b>{{commnet.user.username}}</b>
+            <div>{{commnet.commnet}}</div> at {{coment.timestamp}}
+        </div>
+    </div>
+    {% endfor %}
+</div>

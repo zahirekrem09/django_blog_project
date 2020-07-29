@@ -59,17 +59,25 @@
                             </div>
                             <!--Data-->
                             <div class="item-box-blog-data" ">
-                              <p style="font-size: 12px;"><i class="fas fa-edit"></i> {{ post.author }}, <i class="fas fa-comments"></i> Comments({{post.get_blog_comment_count}}),<i class="fas fa-star {% if post.get_favorite_count %}active{% endif %}">{% if post.get_favorite_count > 0 %}<span class="badge badge-light">{{post.get_favorite_count}}</span>{% endif %}</i></p>
+                              <p style="font-size: 12px;"><i class="fas fa-edit"></i> {{ post.author }},
+                                <i class="fab fa-usps"></i> {{ post.get_category }},
+                                <i class="fas fa-comments"></i> Comments({{post.get_blog_comment_count}}),
+                                <i class="fas fa-star {% if post.get_favorite_count %}active{% endif %}">{% if post.get_favorite_count > 0 %}<span class="badge badge-light">{{post.get_favorite_count}}</span>{% endif %}</i>
+                                <i class="fas fa-eye"></i> Views({{post.views}}),
+                              </p>
                             </div>
                             <!--Text-->
                             <div class="item-box-blog-text" style="overflow: hidden;margin-top: 20px">
 
                               <p style="font-size: 14px;margin-top: -30px">{{post.content|safe|truncatewords:10}}</p>
                             </div>
-                            <div class="mt" style="float: left;margin-top: -20px;padding-top: 20px;"> <a href="{% url 'post' post.pk %}" tabindex="0" class="btn bg-blue-ui white read" style="background-color: #708198 !important;color: #fff !important;cursor: pointer;
-  padding: 4px 20px;
-  float: left;
-  margin-top: 10px;">read more</a> </div>
+
+
+                            <div class="mt" style="float: left;margin-top: -20px;padding-top: 20px;">
+                            <a href="{% url 'post' post.pk %}" tabindex="0" class="btn bg-blue-ui white read" style="background-color: #708198 !important;color: #fff !important;cursor: pointer;
+                            padding: 4px 20px;
+                            float: left;margin-top: 10px;">read more</a>
+                            </div>
                             <!--Read More Button-->
                           </div>
                         </div>
@@ -84,7 +92,10 @@
               </div>
               <!--.Carousel-->
             </div>
+
+
   {% else %}
+
 <div class="row">
   <div class="col-md-10 offset-md-3">
     <div class="col-lg-8">
@@ -123,10 +134,3 @@
 
         </div>
 {% endblock content %}
-
-
-
-
-
-
-

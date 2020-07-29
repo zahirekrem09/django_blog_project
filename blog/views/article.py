@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse, Http404
-from blog.models import Post, Comment, NewComment, FavoriteBlog
+from blog.models import Post, Comment, NewComment, FavoriteBlog, Category
 from django.contrib.auth.decorators import login_required
 from blog.forms import PostForm, CommentForm
 from django.contrib import messages
@@ -51,36 +51,26 @@ def deleteArticle(request, id):
     post = get_object_or_404(Post, id=id)
     post.delete()
     messages.success(request, "Article Successfully Deleted")
-    return redirect("dashboard", filter_by="all")
-
-
-# def addComment(request, id):
-#     post = get_object_or_404(Post, id=id)
-
-#     if request.method == "POST":
-#         comment_author = request.POST.get("comment_author")
-#         comment_content = request.POST.get("comment_content")
-
-#         if comment_author != "" and comment_content != "":
-
-#             new_comment = Comment(comment_author=comment_author,
-#                                   comment_content=comment_content)
-#             new_comment.post = post
-#             new_comment.save()
-#             messages.success(request, "Comment Successfully Added")
-#         else:
-#             messages.warning(request, "Please fill in the fields.")
-#     return redirect("/articles/post/" + str(id))
-#     # return redirect(reverse("post", kwargs={"id": id}))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    # return redirect("dashboard", filter_by="all")
 
 
 def detail(request, id):
     form = CommentForm()
     # post = Post.objects.filter(id=id).first()
     post = get_object_or_404(Post, id=id)
+    post.views = post.views + 1
+    post.save()
     # comments = post.comments.all()
+    articles_list = Post.objects.all()[:5]
+    print(articles_list)
 
-    return render(request, "post.html", {"post": post, "form": form})
+    category_list = Category.objects.all()
+
+    print(category_list)
+
+    # return render(request, "post.html", {"post": post, "form": form})
+    return render(request, "post2.html", {"post": post, "form": form, "articles_list": articles_list, "category_list": category_list})
 
 
 def articles(request, filter_by):
@@ -98,7 +88,7 @@ def articles(request, filter_by):
         for article in FavoriteBlog.objects.filter(user=request.user):
             articles_list.append(article.post)
 
-            # Ara kısmı favoriler için
+            # Search
         if keyword:
             article_id = []
             for article in FavoriteBlog.objects.filter(user=request.user):
@@ -110,10 +100,11 @@ def articles(request, filter_by):
         # return render(request,"articles.html",{"articles":articles})
 
     # Paginator
-    paginator = Paginator(articles_list, 3)
+    paginator = Paginator(articles_list, 6)
     page = request.GET.get('page')
     articles = paginator.get_page(page)
-    return render(request, "articles.html", {"articles": articles, 'filter_by': filter_by})
+    # return render(request, "articles.html", {"articles": articles, 'filter_by': filter_by})
+    return render(request, "articles2.html", {"articles": articles, 'filter_by': filter_by})
 
 
 def favorite_post(request, id):
@@ -128,15 +119,6 @@ def favorite_post(request, id):
         return redirect("dashboard", filter_by="all")
     else:
         return redirect("dashboard", filter_by="all")
-
-
-# @login_required(login_url="account_login")
-# def dashboard(request):
-#     posts = Post.objects.filter(author=request.user)
-#     context = {
-#         "posts": posts
-#     }
-#     return render(request, "dashboard.html", context)
 
 
 @login_required(login_url="account_login")
@@ -210,7 +192,7 @@ def new_add_comment(request, pk, model_type):
 
 @login_required(login_url="account_login")
 def add_or_remove_favorite(request, id):
-    # data = {'count': 0, 'status': 'deleted'}
+
     post = get_object_or_404(Post, id=id)
     favori_blog = FavoriteBlog.objects.filter(
         post=post, user=request.user)
@@ -220,7 +202,6 @@ def add_or_remove_favorite(request, id):
         FavoriteBlog.objects.create(post=post, user=request.user)
         post.is_favorite = True
         post.save()
-        # data.update({'status': 'added'})
     count = post.get_favorite_count()
     #data.update({'count': count})
     if count > 0:
@@ -237,36 +218,7 @@ def add_or_remove_favorite(request, id):
     # print(favori_blog_list)
     # print(favori_blog_list_post)
 
-    # burası olmadı tekrar bakılıcak
-    articles_list = Post.objects.all()
-    paginator = Paginator(articles_list, 3)
-    page = request.GET.get('page')
-    articles = paginator.get_page(page)
     messages.success(request, "Article Successfully Added to Favorites")
     # return render(request, "articles.html", {"articles": articles})
     # return redirect(reverse("blog:post", kwargs={"id": id}))
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-
-# @login_required(login_url="account_login")
-# def post_list_favorite_user(request, id):
-#     page = request.GET.get('page', 1)
-#     blog = get_object_or_404(Blog, slug=id)
-#     user_list = post.get_added_favorite_user_as_object()
-#     paginator = Paginator(user_list, 1)
-#     try:
-#         user_list = paginator.page(page)
-#     except PageNotAnInteger:
-#         user_list = paginator.page(1)
-#     except EmptyPage:
-#         user_list = paginator.page(paginator.num_pages)
-#     my_fallowed_user = Fallowing.get_fallowed_username(request.user)
-#     html = render_to_string('blog/include/favorite/favorite-user-list.html',
-#                             context={'my_fallowed_user': my_fallowed_user,
-#                                      'user_list': user_list},
-#                             request=request)
-
-#     page_html = render_to_string('blog/include/favorite/buttons/show_more_button.html',
-#                                  context={'post': blog, 'user_list': user_list}, request=request)
-
-#     return JsonResponse(data={'html': html, 'page_html': page_html})

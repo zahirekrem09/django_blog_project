@@ -5,3 +5,7 @@ media/*
 blogenv/*
 
 !static/style.css
+
+static/*
+
+

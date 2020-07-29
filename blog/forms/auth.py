@@ -1,6 +1,7 @@
 from allauth.account.forms import SignupForm
 from django import forms
 from blog.models.user import User
+from tempus_dominus.widgets import DatePicker
 
 
 class CustomSignupForm(SignupForm):
@@ -11,12 +12,34 @@ class CustomSignupForm(SignupForm):
 
 
 class CustomUserForm(forms.ModelForm):
+  birthday = forms.DateField(
+      widget=DatePicker(
+          options={
+              'viewMode': 'years',
+
+              'useCurrent': True,
+              'collapse': False,
+          },
+          attrs={
+              'append': 'fa fa-calendar',
+              'icon_toggle': True,
+          }
+      ), required=False,
+  )
+
   class Meta:
     model = User
     #fields = "__all__"
-    fields = ('profile_image', 'username', 'first_name',
-              'last_name', 'email',
+    fields = ('username', 'first_name',
+              'last_name', 'email', 'birthday',
               'phone_number', 'interests',
               'gender', 'marital_status',
               'educational_status', 'profession', 'profile_image'
               )
+
+
+#profil foto uptade için ama olmadı
+class UserProfileUpdateForm(forms.ModelForm):
+  class Meta:
+    model = User
+    fields = ('profile_image',)
