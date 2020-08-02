@@ -182,6 +182,11 @@ ACCOUNT_FORMS = {'signup': 'blog.forms.CustomSignupForm'}
 DATE_INPUT_FORMATS = ['%d-%m-%Y']
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ekremsari.090909@gmail.com'
+EMAIL_HOST_PASSWORD = 'jhaebwmwlnfuzijk'
 
 
 #RECAPTCHA_PUBLIC_KEY = '6LfyirMZAAAAAFBYWbBRqg_SdINlRXyC3HhjBykR'

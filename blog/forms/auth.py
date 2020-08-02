@@ -2,6 +2,7 @@ from allauth.account.forms import SignupForm
 from django import forms
 from blog.models.user import User
 from tempus_dominus.widgets import DatePicker
+from blog.choices import GenderChoices
 
 
 class CustomSignupForm(SignupForm):
@@ -26,6 +27,8 @@ class CustomUserForm(forms.ModelForm):
           }
       ), required=False,
   )
+  gender = forms.ChoiceField(choices=GenderChoices.CHOICES, widget=forms.RadioSelect,
+                             required=False)
 
   class Meta:
     model = User
@@ -36,9 +39,12 @@ class CustomUserForm(forms.ModelForm):
               'gender', 'marital_status',
               'educational_status', 'profession', 'profile_image'
               )
+    widgets = {
+        'interests': forms.CheckboxSelectMultiple,
+    }
 
 
-#profil foto uptade için ama olmadı
+# profil foto uptade için ama olmadı
 class UserProfileUpdateForm(forms.ModelForm):
   class Meta:
     model = User

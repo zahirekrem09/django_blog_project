@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
@@ -25,28 +26,35 @@ urlpatterns = [
     path('auth/', include('allauth.urls')),
     path('user/', include('blog.urls.user')),
     path('articles/', include('blog.urls.post')),
-    #path('articler/', include('blog.urller')),
+    # path('articler/', include('blog.urller')),
     path('', view=index, name="index"),
     path('about/', view=about, name="about"),
     path('contact/', include('contact.urls')),
-    # path('about/', TemplateView.as_view(template_name="about.html")),
-    # path('', TemplateView.as_view(template_name="index.html")),
+
+    path('password-reset/',
+         auth_views.PasswordResetView.as_view(
+             template_name='user/password_reset.html'
+         ),
+         name='password_reset'),
+    path('password-reset/done/',
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='user/password_reset_done.html'
+         ),
+         name='password_reset_done'),
+    path('password-reset-confirm/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='user/password_reset_confirm.html'
+         ),
+         name='password_reset_confirm'),
+    path('password-reset-complete/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='user/password_reset_complete.html'
+         ),
+         name='password_reset_complete'),
+
+]
 
 
-
-
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
-# from django.contrib import admin
-# from django.urls import path, include
-# from django.views.generic import  TemplateView
-
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-#     path('auth/', include('allauth.urls')),
-#     path('user/', include('blog.urls.user')),
-#     path('', TemplateView.as_view(template_name="index.html"))
-
-# ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

@@ -28,6 +28,17 @@
 
 });
     </script> -->
+     <style type="text/css">
+        ul.interests li {
+            display: inline-block;
+            width: 24.5%;
+        }
+
+        ul.gender li {
+            display: inline-block;
+            width: 24.5%;
+        }
+    </style>
 
 {% endblock script_content %}
 
@@ -35,6 +46,7 @@
 
 {% block sub_content %}
 {% load crispy_forms_tags %}
+{% load widget_tweaks %}
 
  <div class="row">
             <div class="col-12">
@@ -48,12 +60,27 @@
   <div class="col-md-6 offset-md-3"> -->
 
 
-    <form method="POST" enctype="multipart/form-data"></>
+    <form method="POST"  enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.media }}
-      {{form|crispy}}
-      <br />
 
+      {% for field in form %}
+        <div class="form-group">
+
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% if field.name == "gender" %}
+                {{ field|add_class:'gender list-inline' }}
+            {% elif field.name == "interests" %}
+                {{ field|add_class:'interests list-inline' }}
+            {% else %}
+                {{ field|add_class:'form-control' }}
+            {% endif %}
+            {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endfor %}
+      <br />
       <button type="submit" class="float-right btn btn-outline-info">Update</button>
     </form>
  <!--  </div>

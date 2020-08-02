@@ -1,12 +1,13 @@
 <div class="container">
-    <h2>Comments</h2>
+    <h2>Comments({{commnets.count}})</h2>
     <div class="my-2">
         {% if user.is_authenticated %}
-          <form action="/blog/postComment" method="post">
+    <form action="/blog/postComment" method="post">
         {%csrf_token%}
         <div class="form-group">
             <label for="">Post Commnet</label>
             <input type="text" name = 'comment' placeholder="enter comment here">
+             <input type="hidden" name = 'parentSno' value="">
         </div>
         <input type="hidden" name = 'postId' value="{{post.id}}">
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -21,13 +22,72 @@
     </div>
     {% for comment in commnets %}
     <div class="row my-3">
-        <div class="col-md-1 bg-success">
-             <img class="rounded mx-auto d-block w-100 p-2" src="/static/img/user.png" alt="user">
+        <div class="col-md-1 ">
+             <img class="rounded mx-auto d-block w-100 p-2 border border-dark"
+             src="/static/img/user.png" alt="user">
         </div>
-        <div class="col-md-11 bg-primary">
+        <div class="col-md-11 ">
             <b>{{commnet.user.username}}</b>
-            <div>{{commnet.commnet}}</div> at {{coment.timestamp}}
+            <span class="badge-badge-secondary">{{coment.timestamp|naturaltime}}</span>
+            <div>{{commnet.commnet}}</div>
+            <div class="reply mx-0">
+                {% if user.is_authenticated %}
+                    <button class="btn btn-primary btn-sm" type="button"
+                            data-toggle="collapse" data-target="#replyBox{{commnet.sno}}"
+                            aria-expanded="false" aria-controls="replyBox{{commnet.sno}}">
+                        Reply
+                    </button>
+
+                <div class="collapse" id="replyBox{{commnet.sno}}">
+                    <div class="card card-body my-2">
+                        <form action="/blog/postComment" method="post">
+                            {%csrf_token%}
+                            <div class="form-group">
+                                <label for="comment">Post a Reply</label>
+                                <input type="text" name = 'comment' placeholder="enter comment here">
+                                <input type="hidden" name = 'parentSno' value="{{commnet.sno}}">
+                            </div>
+                            <input type="hidden" name = 'postId' value="{{post.id}}">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                {%else}
+                <button class="btn btn-primary btn-sm" type="button"
+                            data-toggle="collapse" data-target="#replyBox{{commnet.sno}}"
+                            aria-expanded="false" aria-controls="replyBox{{commnet.sno}}" disabled>
+                        Login to Reply
+                </button>
+                {%endif%}
+                <div class="replies my-2">
+                    {% for reply in replyDict|get_val:comment.sno %}
+                    <div class="row my-2">
+                        <div class="col-md-1">
+                            <img class="rounded mx-auto d-block w-100 p-2 border border-dark"
+                                src="/static/img/user.png" alt="user">
+                        </div>
+                        <div class="col-md-11">
+                            {% comment %} {{reply.comment}} {% endcomment %}
+                            <b>{{reply.user.username}}</b>
+                            <span class="badge-badge-secondary">{{reply.timestamp|naturaltime}}</span>
+                            <div> {{reply.comment}}</div>
+
+                        </div>
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
+
+
+
+
+
+
+
+  <!-- install app django.contrip.humanize eklemel gerek ferk ve
+   { load humanize } basa yazılıcak natural time için -->
