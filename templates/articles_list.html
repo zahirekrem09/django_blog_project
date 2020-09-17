@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{%block script_content %}
+<script>
+  function hiheShow(ID) {
+    var selectID = document.getElementById(ID);
+    if (selectID.style.display == "none") {
+      selectID.style.display = "";
+    } else {
+      selectID.style.display = "none";
+    }
+  }
+</script>
+{% endblock script_content %}
+
+{% block content %}
+<section>
+  <div class="container-fluid grey lighten-3 pb-5">
+    <hr class="pb-5" />
+
+    <div class="container">
+      <div
+        class="row"
+        style="margin-top: -100px; padding-left: 8%; padding-top: 7%;"
+      >
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <h3>Articles</h3>
+          <button
+            class="btn btn-sm btn-outline-warning"
+            onclick="hiheShow('filter');"
+          >
+            Filter
+          </button>
+        </div>
+        <!-- Search -->
+        <form class="form-inline mr-auto">
+          {% csrf_token %}
+          <input
+            type="text"
+            name="keyword"
+            class="input-md form-control mr-sm-2"
+            maxlength="64"
+            placeholder="Search..."
+            value="{{request.GET.keyword}}"
+          />
+          <button type="submit" class="btn btn-outline-warning btn-sm">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
+      </div>
+      <br />
+      <div class="row" id="filter" style="display: none;">
+        <div class="col-12">
+          <div class="card card-body">
+            <form method="get">
+              {{myFilter.form|crispy}}
+              <button class="btn btn-sm btn-outline-warning" type="submit">
+                Search
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <br />
+      <hr />
+
+      <div class="card px-4 px-lg-5">
+        <div class="row pt-5">
+          <!--Main listing-->
+          <div class="col-lg-12 justify-content-center col-12 mt-1">
+            <!--Section: Classic blog listing-->
+            <section class="section classic-blog-listing">
+              <!--Grid row-->
+
+              <div class="row mb-5">
+                {% if articles %}
+               {% for post in articles %}
+                <!--Grid column-->
+                <div class="col-md-12 text-center">
+                  <!--Image-->
+                  <div class="view overlay z-depth-1 mb-3">
+                    <img src="{{post.image.url}}" class="img-fluid rounded" />
+                    <a href="href" ="{% url 'post' post.pk %}">
+                      <div class="mask rgba-white-slight"></div>
+                    </a>
+                  </div>
+
+                  <!--Excerpt-->
+                  <a href="" class="">
+                    <span class="badge badge-danger mb-2"
+                      >{{ post.get_category }}</span
+                    >
+                  </a>
+
+                  <a href="{% url 'post' post.pk %}">
+                    <h2
+                      class="text-center font-weight-bold dark-grey-text my-4"
+                    >
+                      <strong>{{ post.title }}</strong>
+                    </h2>
+                  </a>
+
+                  <p class="dark-grey-text">
+                    {{post.content|safe|truncatewords:10}}
+                  </p>
+
+                  <div class="text-center pb-2">
+                    <a
+                      href="{% url 'post' post.pk %}"
+                      class="btn btn-transparent btn-sm font-weight-bold btn-rounded dark-grey-text"
+                      >Read more</a
+                    >
+                  </div>
+
+                  <!--Post data-->
+                  <div class="post-data mt-3 pt-3 grey-text">
+                    <h6>
+                      By
+                      <a href="#!" class="blue-text"
+                        ><i class="fas fa-edit"></i> {{ post.author }},</a
+                      >
+                      on {{ post.created_at|date:'F d, Y' }}
+                      <i class="far fa-comments pr-2 pl-3"></i>
+                      {{post.get_blog_comment_count}},
+                      <i class="fas fa-eye"></i> {{post.views}},
+                      <i class="fas fa-star"></i>{{post.get_favorite_count}}
+                    </h6>
+
+                    <ul class="list-unstyled list-inline circle-icons">
+                      <!--Facebook-->
+                      <li class="list-inline-item">
+                        <a class="fb-ic">
+                          <i class="fab fa-facebook-f"></i>
+                        </a>
+                      </li>
+                      <!--Twitter-->
+                      <li class="list-inline-item">
+                        <a class="tw-ic">
+                          <i class="fab fa-twitter"></i>
+                        </a>
+                      </li>
+                      <!--Google +-->
+                      <li class="list-inline-item">
+                        <a class="gplus-ic">
+                          <i class="fab fa-google-plus-g"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <br>
+                <hr>
+                <!--Grid column-->
+                  {% endfor%}
+              </div>
+
+              <!--Grid row-->
+            </section>
+            <!--Section: Classic blog listing-->
+
+            <!--Pagination dark grey-->
+
+            <!--Pagination dark grey-->
+          </div>
+          <!--Main listing-->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<br>
+  {% else %}
+
+<div class="row">
+  <div class="col-md-10 offset-md-3">
+    <div class="col-lg-8">
+      <div  class="alert alert-warning">
+        Makale bulunamadı
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+        <!-- Pager  sayfalama  -->
+        <div class="clearfix">
+              {% if articles.number == 1 %}
+                 <a class="btn btn-outline-info float-left" href="?page=2{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}">Older Posts &rarr;</a>
+              {% endif %}
+
+              {% if articles.has_previous %}
+                <a class="btn btn-outline-info " href="{% url 'articles'%}" >&laquo;</a>
+                <a class="btn btn-outline-info " href="?page={{articles.previous_page_number}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> &lsaquo;</a>
+              {% endif %}
+
+              {% for num in articles.paginator.page_range %}
+                {% if articles.number == num and articles.number != 1  %}
+                 <a class="btn btn-outline-info " href="?page={{num}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> {{num}} </a>
+                {% endif %}
+              {%endfor%}
+
+              {% if articles.has_next and articles.number != 1 %}
+                <a class="btn btn-outline-info " href="?page={{articles.next_page_number}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> &rsaquo;</a>
+                <a class="btn btn-outline-info " href="?page={{articles.paginator.num_pages}}{% if request.GET.keyword %}&keyword={{request.GET.keyword}}{% endif %}"> &raquo;</a>
+              {% endif %}
+
+</div>
+        </div>
+{% endblock content %}

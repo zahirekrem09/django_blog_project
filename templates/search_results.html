@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+      <div class="container">
+      <div class="col-md-12 " >
+        <div class="card my-4">
+          <h5 class="card-header text-center ">This is the results of your search</h5>
+          <div class="card-body">
+
+          <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Date</th>
+        <th scope="col">Author</th>
+        <th scope="col">Favorite</th>
+        <th scope="col">View</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for post in queryset  %}
+      <tr>
+        <td><a href="{% url 'post' post.id %}">{{post.title}}</a>  </td>
+        <td>  <i class="fas fa-calendar-alt"></i> {{post.created_at|date:'F d, Y'}}</td>
+        <td>
+         <i class="fas fa-edit"></i> {{post.author.first_name}}
+        </td>
+          <td>
+         <i class="fas fa-star"></i> {{post.get_favorite_count}}
+        </td>
+          <td>
+         <i class="fas fa-eye"></i> Views({{post.views}})
+        </td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+          </div>
+        </div>
+      </div>
+      </div>
+{% endblock content %}

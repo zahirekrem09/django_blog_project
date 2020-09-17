@@ -58,22 +58,13 @@ class ProfessionChoices(object):
 
 
 class CategoryChoices(object):
-    PYTHON = 0
-    JAVA = 1
-    JAVASCRIPT = 2
-    LINUX = 3
-    CSS = 4
-    HTML = 5
-    REACT = 6
-    DEVOPS = 7
-
     CHOICES = (
-        (PYTHON, "Python"),
-        (JAVA, "Java"),
-        (JAVASCRIPT, "Javascript"),
-        (LINUX, "Linux"),
-        (CSS, "Css"),
-        (HTML, "Html"),
-        (REACT, "React"),
-        (DEVOPS, "Devops"),
+        ("PYTHON", "Python"),
+        ("JAVA", "Java"),
+        ("JAVASCRIPT", "Javascript"),
+        ("LINUX", "Linux"),
+        ("CSS", "Css"),
+        ("HTML", "Html"),
+        ("REACT", "React"),
+        ("DEVOPS", "Devops"),
     )

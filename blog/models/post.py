@@ -23,8 +23,10 @@ class Post(models.Model):
     image = models.FileField(
         upload_to='images/', blank=True, null=True, verbose_name="Post İmage", default="/images/post-sample-image.jpg")
 
-    #category = models.ForeignKey(Category, on_delete=models.CASCADE,null=True)
-    category = models.ManyToManyField(to=Category)
+    #category = models.ManyToManyField(to=Category)
+    category = models.CharField(
+        null=True, choices=CategoryChoices.CHOICES, max_length=100,)
+
     views = models.IntegerField(default=0)
 
     is_favorite = models.BooleanField(default=False)
@@ -85,8 +87,8 @@ class Post(models.Model):
             data_list.append(obj.user)
         return data_list
 
-    def get_category(self):
-        return self.category.all().first()
+    # def get_category(self):
+    #     return self.category.all().first()
 
 
 # class Comment(models.Model):

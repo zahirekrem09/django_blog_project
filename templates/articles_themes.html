@@ -16,57 +16,418 @@
       </div>
         </a>
       </div>
-      <div class="card">
-        <a href="#">
-        <img class="card-img-top" src="https://images.unsplash.com/photo-1472076638602-b1f8b1ac0b4a?ixlib=rb-0.3.5&s=63c9de7246b535be56c8eaff9b87dd89&auto=format&fit=crop&w=500&q=80" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, doloremque!</h5>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio iusto maxime nemo omnis praesentium similique.</p>
-          <p class="card-text"><small class="text-muted"><i class="fas fa-eye"></i>1000<i class="far fa-user"></i>admin<i class="fas fa-calendar-alt"></i>Jan 20, 2018</small></p>
-        </div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="#">
-        <img class="card-img-top" src="https://images.unsplash.com/photo-1535086181678-5a5c4d23aa7d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=34c86263bec2c8f74ceb74e9f4c5a5fc&auto=format&fit=crop&w=500&q=80" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Lorem ipsum dolor sit amet, consectetur.</h5>
-          <p class="card-text">Amet commodi deleniti enim laboriosam odio placeat praesentium quis ratione rerum suscipit.</p>
-          <p class="card-text"><small class="text-muted"><i class="fas fa-eye"></i>1000<i class="far fa-user"></i>admin<i class="fas fa-calendar-alt"></i>Jan 20, 2018</small></p>
-        </div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="#">
-        <img class="card-img-top" src="https://images.unsplash.com/photo-1535074153497-b08c5aa9c236?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d2aaf944a59f16fe1fe72f5057b3a7dd&auto=format&fit=crop&w=500&q=80" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Lorem ipsum dolor sit amet, consectetur.</h5>
-          <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          <p class="card-text"><small class="text-muted"><i class="fas fa-eye"></i>1000<i class="far fa-user"></i>admin<i class="fas fa-calendar-alt"></i>Jan 20, 2018</small></p>
-        </div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="#">
-        <img class="card-img-top" src="https://images.unsplash.com/photo-1535124406821-d2848dfbb25c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=98c434d75b44c9c23fc9df2a9a77d59f&auto=format&fit=crop&w=500&q=80" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Lorem ipsum dolor sit amet.</h5>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. At, consequatur culpa cumque deserunt dignissimos error explicabo fugiat harum ipsam magni minus mollitia nemo perferendis qui repellendus rerum saepe vel voluptate voluptatem voluptatum!
-            Aperiam, labore, molestiae!..</p>
-          <p class="card-text"><small class="text-muted"><i class="fas fa-eye"></i>1000<i class="far fa-user"></i>admin<i class="fas fa-calendar-alt"></i>Jan 20, 2018</small></p>
-        </div>
-        </a>
-      </div>
-      <div class="card">
-        <a href="#">
-        <img class="card-img-top" src="https://images.unsplash.com/photo-1508015926936-4eddcc6d4866?ixlib=rb-0.3.5&s=10b3a8717ab609be8d7786cab50c4e0b&auto=format&fit=crop&w=500&q=80" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</h5>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque commodi debitis eaque explicabo fuga maiores necessitatibus, neque omnis optio vel!</p>
-          <p class="card-text"><small class="text-muted"><i class="fas fa-eye"></i>1000<i class="far fa-user"></i>admin<i class="fas fa-calendar-alt"></i>Jan 20, 2018</small></p>
-        </div>
-        </a>
-      </div>
     </div>
   </div>
 </div>
+
+
+ {% if articles  %}
+  {% for post in articles %}
+<div class="card-deck">
+  <div class="card">
+    <a href="{% url 'post' post.pk %}">
+      <img class="card-img-top" src="{{post.image.url}}" alt="Card image cap">
+    </a>
+
+    <div class="card-body">
+       <a href="{% url 'post' post.pk %}">
+          <h5 class="card-title">{{ post.title }}</h5>
+        </a>
+
+      <p class="card-text">{{post.content|safe|truncatewords:10}}...</p>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">
+        <i class="fas fa-edit"></i> {{ post.author }},
+        <i class="fab fa-usps"></i> {{ post.get_category }},
+        <i class="fas fa-comments"></i> {{post.get_blog_comment_count}},
+        <i class="fas fa-eye"></i> {{post.views}},
+        <i class="fas fa-star" > </i> {{post.get_favorite_count}}
+      </small>
+    </div>
+  </div>
+  <a  href="{% url 'post' post.pk %}"  class="btn btn-outline-info float-right">Read More</a>
+   {%endfor%}
+</div>
+
+
+    <div class="row">
+
+
+                      {% if articles  %}
+                      {% for post in articles %}
+    <div class="col-md-4" style="padding-bottom:20px;">
+<div class="card">
+  <img class="card-img" src="{{post.image.url}}" alt="">
+  <div class="card-img-overlay">
+    <a class="btn btn-light btn-sm"><i class="fab fa-usps"></i> {{ post.category|title }}</a>
+  </div>
+  <div class="card-body">
+    <h4 style="text-align: center;" class="card-title">{{ post.title }}</h4>
+    <small class="text-muted cat">
+      <i class="far fa-clock text-info"></i> 30 minutes
+      <i class="fas fa-users text-info"></i> {{post.get_favorite_count}}
+    </small>
+    <p class="card-text">{{post.content|safe|truncatewords:10}}...</p>
+  </div>
+  <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+    <div class="views"><i class="fas fa-calendar-alt"></i> {{ post.created_at|date:'F d, Y' }}
+    </div>
+    <div class="stats">
+         <i class="far fa-eye"></i> {{post.views}}
+    <i class="far fa-comment"></i> {{post.get_blog_comment_count}}
+    </div>
+  </div>
+</div>
+ <a style = "cursor: pointer;" href="{% url 'post' post.pk %}" tabindex="0" class="btn btn-info">Read Recipe</a>
+  </div>
+  {%endfor%}
+
+
+
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+
+      <!-- Blog Entries Column -->
+      <div class="col-md-8">
+        {% if articles  %}
+        {% for post in articles %}
+        <!-- Blog Post -->
+        <div class="card mb-4">
+          <img class="card-img-top" src="{{post.image.url}}" alt="Card image cap" style="width: 300px;height: 750px">
+          <div class="card-body">
+            <h2 class="card-title">{{ post.title }}</h2>
+            <p class="card-text">{{post.content|safe|truncatewords:10}}</p>
+            <a href="{% url 'post' post.pk %}" class="btn btn-primary">Read More &rarr;</a>
+          </div>
+          <div class="card-footer text-muted">
+            Posted on <i class="fas fa-calendar-alt"></i> {{ post.created_at|date:'F d, Y' }} by
+            <a href="#"><i class="fas fa-edit"></i> {{ post.author }}</a>
+            <i class="fab fa-usps"></i> {{ post.get_category }},
+            <i class="fas fa-comments"></i> {{post.get_blog_comment_count}},
+            <i class="fas fa-eye"></i> {{post.views}},
+            <i class="fas fa-users text-info"></i> {{post.get_favorite_count}}
+          </div>
+        </div>
+         {%endfor%}
+      </div>
+
+
+      <!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+
+        <!-- Search Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">Search</h5>
+          <div class="card-body">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search for...">
+              <span class="input-group-append">
+                <button class="btn btn-secondary" type="button">Go!</button>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">Categories</h5>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a href="#">Web Design</a>
+                  </li>
+                  <li>
+                    <a href="#">HTML</a>
+                  </li>
+                  <li>
+                    <a href="#">Freebies</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-lg-6">
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a href="#">JavaScript</a>
+                  </li>
+                  <li>
+                    <a href="#">CSS</a>
+                  </li>
+                  <li>
+                    <a href="#">Tutorials</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">Side Widget</h5>
+          <div class="card-body">
+            You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <!-- /.row -->
+
+  </div>
+  <!-- /.container -->
+
+
+
+
+
+
+    </header>
+    <!-- /.Navigation -->
+
+    <!--Main layout-->
+
+        <section>
+
+            <div class="container-fluid grey lighten-3 pb-5">
+                <hr class="pb-5">
+
+                <div class="container">
+
+                    <div class="card px-4 px-lg-5">
+
+                        <div class="row pt-5">
+
+                            <!--Main listing-->
+                            <div class="col-lg-12 justify-content-center col-12 mt-1">
+
+                                <!--Section: Classic blog listing-->
+                                <section class="section classic-blog-listing">
+
+                                    <!--Grid row-->
+                                    <div class="row mb-5">
+                                        <!--Grid column-->
+                                        <div class="col-md-12 text-center">
+
+                                            <!--Image-->
+                                            <div class="view overlay z-depth-1 mb-3">
+                                                <img src="https://mdbootstrap.com/img/Photos/Slides/img%20%28141%29.jpg" class="img-fluid rounded">
+                                                <a href="#!">
+                                                    <div class="mask rgba-white-slight"></div>
+                                                </a>
+                                            </div>
+
+                                            <!--Excerpt-->
+                                            <a href="" class="">
+                                                <span class="badge badge-danger mb-2">travel</span>
+                                            </a>
+
+                                            <h2 class="text-center font-weight-bold dark-grey-text my-4">
+                                                <strong>This is title of the news</strong>
+                                            </h2>
+
+                                            <p class="dark-grey-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+                                                laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis
+                                                et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem
+                                                quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni
+                                                dolores eos qui ratione voluptatem sequi nesciunt.
+                                            </p>
+
+                                            <div class="text-center pb-2">
+                                                <a class="btn btn-transparent btn-sm font-weight-bold btn-rounded dark-grey-text">Read more</a>
+                                            </div>
+
+                                            <!--Post data-->
+                                            <div class="post-data mt-3 pt-3 grey-text">
+                                                <h6>By
+                                                    <a href="#!" class="blue-text">Martha Barnett</a> on 25/08/2016
+                                                    <a href="#!" class="dark-grey-text">
+                                                        <i class="far fa-comments pr-2 pl-3"></i>149</a>
+                                                </h6>
+
+                                                <ul class="list-unstyled list-inline circle-icons">
+                                                    <!--Facebook-->
+                                                    <li class="list-inline-item">
+                                                        <a class="fb-ic">
+                                                            <i class="fab fa-facebook-f"></i>
+                                                        </a>
+                                                    </li>
+                                                    <!--Twitter-->
+                                                    <li class="list-inline-item">
+                                                        <a class="tw-ic">
+                                                            <i class="fab fa-twitter"></i>
+                                                        </a>
+                                                    </li>
+                                                    <!--Google +-->
+                                                    <li class="list-inline-item">
+                                                        <a class="gplus-ic">
+                                                            <i class="fab fa-google-plus-g"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+
+                                        </div>
+                                        <!--Grid column-->
+                                    </div>
+                                    <!--Grid row-->
+
+                                </section>
+                                <!--Section: Classic blog listing-->
+
+                                <!--Pagination dark grey-->
+
+                                <!--Pagination dark grey-->
+
+                            </div>
+                            <!--Main listing-->
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+        <!--/Blog-->
+
+
+    <!--Footer-->
+    <footer class="page-footer rgba-stylish-strong text-center text-md-left mt-0 pt-4">
+
+        <!--Footer Links-->
+        <div class="container">
+
+            <!-- Footer links -->
+            <div class="row text-center text-md-left mt-3 pb-3">
+
+                <!--First column-->
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">About me</h6>
+                    <p>Here you can use rows and columns here to organize your footer content. Lorem ipsum dolor sit amet,
+                        consectetur adipisicing elit.</p>
+                </div>
+                <!--/.First column-->
+
+                <hr class="w-100 clearfix d-md-none">
+
+                <!--Second column-->
+                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">Category</h6>
+                    <p>
+                        <a href="#!">Lifestyle</a>
+                    </p>
+                    <p>
+                        <a href="#!">Travel</a>
+                    </p>
+                    <p>
+                        <a href="#!">Work</a>
+                    </p>
+                    <p>
+                        <a href="#!">Fashion</a>
+                    </p>
+                </div>
+                <!--/.Second column-->
+
+                <hr class="w-100 clearfix d-md-none">
+
+                <!--Third column-->
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">Useful links</h6>
+                    <p>
+                        <a href="#!">Collaboriation</a>
+                    </p>
+                    <p>
+                        <a href="#!">Media about me</a>
+                    </p>
+                    <p>
+                        <a href="#!">Newsletter</a>
+                    </p>
+                    <p>
+                        <a href="#!">Help</a>
+                    </p>
+                </div>
+                <!--/.Third column-->
+
+                <hr class="w-100 clearfix d-md-none">
+
+                <!--Fourth column-->
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
+                    <p>
+                        <i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
+                    <p>
+                        <i class="fas fa-envelope mr-3"></i> info@example.com</p>
+                    <p>
+                        <i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
+                    <p>
+                        <i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
+                </div>
+                <!--/.Fourth column-->
+
+            </div>
+            <!-- Footer links -->
+
+            <hr>
+
+            <div class="row py-3 d-flex align-items-center">
+
+                <!--Grid column-->
+                <div class="col-md-7 col-lg-8">
+
+                    <!--Copyright-->
+                    <p class="text-center text-md-left grey-text">
+                        © 2019 Copyright: <a href="https://mdbootstrap.com/education/bootstrap/" target="_blank"> MDBootstrap.com </a>
+                    </p>
+                    <!--/.Copyright-->
+
+                </div>
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <div class="col-md-5 col-lg-4 ml-lg-0">
+
+                    <!--Social buttons-->
+                    <div class="social-section text-center text-md-left">
+                        <ul class="list-unstyled list-inline">
+                            <li class="list-inline-item mx-0">
+                                <a class="btn-floating btn-sm rgba-white-slight mr-xl-4">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item mx-0">
+                                <a class="btn-floating btn-sm rgba-white-slight mr-xl-4">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item mx-0">
+                                <a class="btn-floating btn-sm rgba-white-slight mr-xl-4">
+                                    <i class="fab fa-google-plus-g"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item mx-0">
+                                <a class="btn-floating btn-sm rgba-white-slight mr-xl-4">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/.Social buttons-->
+
+                </div>
+                <!--Grid column-->
+
+            </div>
+
+        </div>
+
+    </footer>
+    <!--/.Footer-->
+

@@ -52,7 +52,6 @@
     </script>
 {% endblock script_content %}
 
-
 {% block content %}
 
   <!-- Page Content -->
@@ -73,6 +72,7 @@
                <i class="fas fa-calendar-alt"></i> {{ post.created_at|date:'F d, Y' }}
                 <i class="fas fa-comments"></i> Comments-({{post.get_blog_comment_count}})
                 <i class="fas fa-eye"></i> Views({{post.views}})
+                <i class="fab fa-usps"></i> {{ post.category|title }}
 
                {% if post.get_favorite_count > 0 %}  <i class="fas fa-star {% if post.get_favorite_count %}active{% endif %}"><span class="badge badge-light">{{post.get_favorite_count}}</span>{% endif %}</i>
 
@@ -100,7 +100,7 @@
         <!-- Comments Form -->
          <div class="row mt-5">
 
-        <div class="ccol-md-9 col-sm-9 col-9 pr-0 mx-auto" id="blog-comment-list">
+        <div class="col-md-9 col-sm-9 col-9 pr-0 mx-auto" id="blog-comment-list">
          {% include 'comment/comment-list-partial.html' with post=post  %}
         </div>
       </div>
@@ -148,12 +148,15 @@
         <div class="card my-4">
           <h5 class="card-header">Search</h5>
           <div class="card-body">
+
             <div class="input-group">
                {% csrf_token %}
-              <input type="text" name = "keyword" class="form-control" placeholder="Search for...">
+              <form action="{% url 'search' %}" class="form-inline mr-auto">
+              <input type="text" name = "keyword" class="form-control input-group-append" placeholder="Search for...">
               <span class="input-group-append">
-                <button class="btn btn-secondary" type="button">Go!</button>
+                <button type="submit" class="btn btn-outline-warning btn-sm"><i class="fas fa-search"></i></button>
               </span>
+              </form>
             </div>
           </div>
         </div>
@@ -183,9 +186,9 @@
           <h5 class="card-header">Side Widget</h5>
           <div class="card-body">
              <ul class="list-unstyled mb-0">
-              {% for i in articles_list %}
+              {% for post in articles_list %}
                   <li>
-                    <a href="{% url 'post' i.pk %}">{{i.title}}</a>
+                    <a href="{% url 'post' post.pk %}">{{post.title}}</a>
                   </li>
                 {%endfor%}
                 </ul>
@@ -194,6 +197,7 @@
 
       </div>
 
+    </div>
     </div>
     <!-- /.row -->
 

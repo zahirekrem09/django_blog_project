@@ -4,10 +4,11 @@ from django.conf.urls import url
 #from blog.views.post import BlogPageView
 from blog.views.article import (dashboard, addarticle,
                                 updateArticle, deleteArticle,
-                                detail, articles,
-                                favorite_post, new_add_comment, get_child_comment_form, add_or_remove_favorite)
+                                detail, articles, search,
+                                favorite_post, new_add_comment,
+                                get_child_comment_form, add_or_remove_favorite)
 urlpatterns = [
-    path('<str:filter_by>', view=articles, name="articles"),
+    path('', view=articles, name="articles"),
     #path('', BlogPageView.as_view(), name='articles'),
     #path('post/<int:id>', BlogDetailView.as_view(), name='post'),
     path('post/<int:id>/', view=detail, name='post'),
@@ -16,6 +17,7 @@ urlpatterns = [
     #path('post/<slug:slug>/', view=detail, name='post'),
     #path('dashboard/', view=dashboard, name="dashboard"),
     path('dashboard/<str:filter_by>', view=dashboard, name="dashboard"),
+    path('search/', view=search, name='search'),
     path('addarticle/', view=addarticle, name="addarticle"),
     path('update/<int:id>', view=updateArticle, name="update"),
     path('delete/<int:id>', view=deleteArticle, name="delete"),

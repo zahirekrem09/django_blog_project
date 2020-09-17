@@ -7,7 +7,22 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
+from blog.filters import PostFilter
 # from django.utils.text import slugify
+
+
+def search(request):
+    queryset = Post.objects.all()
+    query = request.GET.get('keyword')
+    if query:
+        queryset = queryset.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query)
+        ).distinct()
+    context = {
+        'queryset': queryset
+    }
+    return render(request, 'search_results.html', context)
 
 
 @login_required(login_url="account_login")
@@ -65,46 +80,70 @@ def detail(request, id):
     articles_list = Post.objects.all()[:5]
     print(articles_list)
 
-    category_list = Category.objects.all()
-
-    print(category_list)
-
     # return render(request, "post.html", {"post": post, "form": form})
-    return render(request, "post2.html", {"post": post, "form": form, "articles_list": articles_list, "category_list": category_list})
+    return render(request, "post2.html", {"post": post, "form": form, "articles_list": articles_list})
 
 
-def articles(request, filter_by):
+# def articles(request, filter_by):
+#     articles_list = Post.objects.all()
+#     # Search
+#     keyword = request.GET.get("keyword")
+#     if keyword:
+#         # articles_list = Post.objects.filter(title__contains=keyword)
+#         articles_list = Post.objects.filter(
+#             Q(title__contains=keyword) |
+#             Q(content__contains=keyword)
+#         ).distinct()
+
+#     myFilter = PostFilter(request.GET, queryset=articles_list)
+#     articles_list = myFilter.qs
+
+#     if filter_by == 'favorites':
+#         articles_list = []
+#         for article in FavoriteBlog.objects.filter(user=request.user):
+#             articles_list.append(article.post)
+
+#             # Search
+#         if keyword:
+#             article_id = []
+#             for article in FavoriteBlog.objects.filter(user=request.user):
+#                 article_id.append(article.post.id)
+#                 articles_list = Post.objects.filter(
+#                     Q(id__in=article_id) & (Q(title__contains=keyword) | Q(content__contains=keyword))).distinct()
+
+#         # return render(request,"articles.html",{"articles":articles})
+
+#     # Paginator
+#     paginator = Paginator(articles_list, 6)
+#     page = request.GET.get('page')
+#     articles = paginator.get_page(page)
+#     # return render(request, "articles.html", {"articles": articles, 'filter_by': filter_by})
+#     return render(request, "articles2.html", {"articles": articles, 'filter_by': filter_by, 'myFilter': myFilter})
+def articles(request):
     articles_list = Post.objects.all()
     # Search
     keyword = request.GET.get("keyword")
     if keyword:
-        # articles_list = Post.objects.filter(title__contains=keyword)
         articles_list = Post.objects.filter(
             Q(title__contains=keyword) |
             Q(content__contains=keyword)
         ).distinct()
-    if filter_by == 'favorites':
-        articles_list = []
-        for article in FavoriteBlog.objects.filter(user=request.user):
-            articles_list.append(article.post)
 
-            # Search
-        if keyword:
-            article_id = []
-            for article in FavoriteBlog.objects.filter(user=request.user):
-                article_id.append(article.post.id)
-                print(article_id)
-                articles_list = Post.objects.filter(
-                    Q(id__in=article_id) & (Q(title__contains=keyword) | Q(content__contains=keyword))).distinct()
-
-        # return render(request,"articles.html",{"articles":articles})
-
+    # filter
+    myFilter = PostFilter(request.GET, queryset=articles_list)
+    articles_list = myFilter.qs
     # Paginator
-    paginator = Paginator(articles_list, 6)
+    paginator = Paginator(articles_list, 2)
     page = request.GET.get('page')
-    articles = paginator.get_page(page)
+    try:
+        articles = paginator.get_page(page)
+    except PageNotAnInteger:
+        articles = paginator.page(1)
+    except EmptyPage:
+        articles = paginator.page(paginator.num_pages)
     # return render(request, "articles.html", {"articles": articles, 'filter_by': filter_by})
-    return render(request, "articles2.html", {"articles": articles, 'filter_by': filter_by})
+    # return render(request, "articles2.html", {"articles": articles, 'myFilter': myFilter})
+    return render(request, "articles_list.html", {"articles": articles, 'myFilter': myFilter})
 
 
 def favorite_post(request, id):

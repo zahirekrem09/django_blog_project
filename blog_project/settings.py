@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_cleanup',
     'tempus_dominus',
+    'django_filters',
 
 
 
