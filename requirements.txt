@@ -14,7 +14,7 @@ django-tempus-dominus==5.1.2.13
 django-widget-tweaks==1.4.8
 idna==2.10
 oauthlib==3.1.0
-Pillow==7.2.0
+Pillow==9.3.0
 python3-openid==3.2.0
 pytz==2020.1
 requests==2.24.0
